@@ -45,6 +45,10 @@ class UserProfile(models.Model):
         null=True,
         blank=True
     )
+    profile_header = models.CharField(
+        max_length=50,
+        blank=True
+    )
 
     def __str__(self):
         return f"Profile: {self.user.username}"
