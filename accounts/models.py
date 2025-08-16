@@ -1,12 +1,33 @@
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
+from accounts.validators import custom_username_validator
+
 
 class User(AbstractUser):
+    username = models.CharField(
+        max_length=30,
+        unique=True,
+        help_text=_(
+            "Required 30 characters or fewer. "
+            "Letters, digits, dots and underscore only."
+        ),
+        validators=[custom_username_validator],
+    )
+    first_name = models.CharField(
+        max_length=15,
+    )
+    last_name = models.CharField(
+        max_length=15,
+    )
     phone = models.CharField(
         max_length=18,
-        unique=True
+        unique=True,
+        error_messages={
+            "unique": _("A Phone number already exists."),
+        },
     )
 
     def __str__(self):
