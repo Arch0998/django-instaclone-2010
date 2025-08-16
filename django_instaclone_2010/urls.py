@@ -23,6 +23,6 @@ from accounts.views import HomeLoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", HomeLoginView.as_view(), name="home"),
+    path("", HomeLoginView.as_view(), name="login"),
     # path("accounts/", include("accounts.urls")),
 ]
