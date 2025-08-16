@@ -41,3 +41,19 @@ class FollowAdmin(admin.ModelAdmin):
         "follower",
         "following"
     ]
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = [
+        "user",
+        "avatar",
+        "profile_header"
+    ]
+    search_fields = [
+        "user__username",
+        "profile_header"
+    ]
+    list_filter = [
+        "user__username",
+    ]
