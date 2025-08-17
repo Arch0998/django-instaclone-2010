@@ -1,12 +1,12 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
+from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 from django.shortcuts import redirect
 from accounts.models import User
 
+from accounts.forms import UserRegisterForm
 
 class HomeLoginView(LoginView):
     template_name = "accounts/login.html"
@@ -17,7 +17,7 @@ class HomeLoginView(LoginView):
 
 
 class UserRegisterView(CreateView):
-    form_class = UserCreationForm
+    form_class = UserRegisterForm
     template_name = "accounts/registration.html"
     success_url = reverse_lazy("accounts:home")
 

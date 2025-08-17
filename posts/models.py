@@ -9,11 +9,11 @@ class Post(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="posts"
-    ),
+    )
     image = models.ImageField(
         upload_to="posts/%Y/%m/%d/",
         blank=True
-    ),
+    )
     caption = models.TextField(
         blank=True
     )
