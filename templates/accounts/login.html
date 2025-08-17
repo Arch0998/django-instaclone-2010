@@ -1,22 +1,53 @@
-{% extends "base.html" %}
-{% load crispy_forms_filters %}
-{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна сторінка</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .login-form { max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .links { text-align: center; margin-top: 20px; }
+        .links a { margin: 0 10px; text-decoration: none; color: #007cba; }
+        .messages { color: red; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="login-form">
+        <h2>Вхід в систему</h2>
 
-{% block title %}Instaclone 2010{% endblock %}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-{% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
-    <h2 class="text-center mb-4">Log in</h2>
-    <form action="{% url 'login' %}" method="post">
-      {% csrf_token %}
-      {{ form|crispy }}
-      <button type="submit" class="btn btn-primary w-100">Log in</button>
-    </form>
-    <p class="text-center mt-2">
-{#  <a href="{% url 'registration' %}">Sign up</a> | #}
-{#  <a href="{% url 'password_reset' %}">Forgot password?</a>#}
-    </p>
-  </div>
-</div>
-{% endblock %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Ім'я користувача:</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+
+            <button type="submit">Увійти</button>
+        </form>
+
+        <div class="links">
+            <a href="{% url 'accounts:registration' %}">Реєстрація</a>
+            <a href="{% url 'password_reset' %}">Забув пароль</a>
+        </div>
+    </div>
+</body>
+</html>

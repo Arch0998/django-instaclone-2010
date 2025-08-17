@@ -1,0 +1,39 @@
+<!-- templates/accounts/profile.html -->
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профіль {{ profile_user.username }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .profile-container { max-width: 600px; margin: 0 auto; }
+        .profile-header { text-align: center; margin-bottom: 30px; }
+        .profile-info { background: #f5f5f5; padding: 20px; border-radius: 5px; }
+        .logout-link { float: right; color: #dc3545; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <form method="post" action="{% url 'logout' %}" style="display: inline; float: right;">
+                {% csrf_token %}
+                <button type="submit" class="logout-link" style="background: none; border: none; color: #dc3545; text-decoration: underline; cursor: pointer; font-size: inherit;">Вийти</button>
+            </form>
+            <h1>Профіль користувача</h1>
+        </div>
+
+        <div class="profile-info">
+            <h2>{{ profile_user.username }}</h2>
+            <p><strong>Email:</strong> {{ profile_user.email|default:"Не вказано" }}</p>
+            <p><strong>Ім'я:</strong> {{ profile_user.first_name|default:"Не вказано" }}</p>
+            <p><strong>Прізвище:</strong> {{ profile_user.last_name|default:"Не вказано" }}</p>
+            <p><strong>Дата реєстрації:</strong> {{ profile_user.date_joined|date:"d.m.Y" }}</p>
+
+            {% if user == profile_user %}
+                <p><em>Це ваш профіль</em></p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
