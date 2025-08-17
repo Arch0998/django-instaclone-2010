@@ -36,3 +36,9 @@ class UserProfileView(LoginRequiredMixin, DetailView):
     context_object_name = "profile_user"
     slug_field = "username"
     slug_url_kwarg = "username"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["posts"] = self.object.posts.all().order_by("-created_at")
+        context["posts_count"] = context["posts"].count()
+        return context

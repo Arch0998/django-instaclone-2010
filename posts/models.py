@@ -12,7 +12,8 @@ class Post(models.Model):
     )
     image = models.ImageField(
         upload_to="posts/%Y/%m/%d/",
-        blank=True
+        blank=False,
+        null=False
     )
     caption = models.TextField(
         blank=True
@@ -34,8 +35,8 @@ class Post(models.Model):
         return f"Post #{self.id} by {self.author.username}"
 
     def clean(self):
-        if not self.image and not self.caption:
-            raise ValidationError("Post must have an image or a caption.")
+        if not self.image:
+            raise ValidationError("Post must have an image")
 
 
 class PostLike(models.Model):
