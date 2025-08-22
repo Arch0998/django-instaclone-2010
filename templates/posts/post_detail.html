@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Post by {{ post.author.username }} - Instaclone 2010{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Post Card -->
+    <div class="card-modern" style="margin-bottom: 30px;">
+        <!-- Post Header -->
+        <div style="padding: 20px; border-bottom: 1px solid var(--ig-border); display: flex; align-items: center; gap: 15px;">
+            {% if post.author.profile.avatar %}
+                <img src="{{ post.author.profile.avatar.url }}"
+                     alt="{{ post.author.username }}"
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
+            {% else %}
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            <div style="flex: 1;">
+                <h6 style="margin: 0; font-weight: 600;">
+                    <a href="{% url 'accounts:profile' username=post.author.username %}" 
+                       style="text-decoration: none; color: var(--ig-text-primary);">
+                        @{{ post.author.username }}
+                    </a>
+                </h6>
+                <small style="color: var(--ig-text-secondary);">
+                    <i class="fas fa-clock"></i>
+                    {{ post.created_at|date:"M d, Y \a\t H:i" }}
+                </small>
+            </div>
+            {% if user == post.author %}
+                <div class="dropdown">
+                    <button style="background: none; border: none; color: var(--ig-text-secondary); font-size: 1.2rem; cursor: pointer;" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit</a></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash"></i> Delete</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Post Image -->
+        <div style="position: relative;">
+            <img src="{{ post.image.url }}" 
+                 alt="Post by {{ post.author.username }}"
+                 style="width: 100%; max-height: 600px; object-fit: cover;">
+        </div>
+        
+        <!-- Post Actions -->
+        <div style="padding: 15px 20px; border-bottom: 1px solid var(--ig-border); display: flex; align-items: center; gap: 20px;">
+            <button class="btn-outline-gradient" style="border: none; background: none; color: var(--ig-text-primary); font-size: 1.3rem; padding: 5px 10px;">
+                <i class="far fa-heart"></i>
+            </button>
+            <button style="border: none; background: none; color: var(--ig-text-primary); font-size: 1.3rem; padding: 5px 10px; cursor: pointer;">
+                <i class="far fa-comment"></i>
+            </button>
+            <button style="border: none; background: none; color: var(--ig-text-primary); font-size: 1.3rem; padding: 5px 10px; cursor: pointer;">
+                <i class="far fa-share-square"></i>
+            </button>
+            <div style="margin-left: auto;">
+                <button style="border: none; background: none; color: var(--ig-text-primary); font-size: 1.3rem; padding: 5px 10px; cursor: pointer;">
+                    <i class="far fa-bookmark"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Post Info -->
+        <div style="padding: 15px 20px;">
+            {% if post.likes.count > 0 %}
+                <p style="margin: 0 0 10px 0; font-weight: 600; color: var(--ig-text-primary);">
+                    <i class="fas fa-heart" style="color: var(--ig-pink);"></i>
+                    {{ post.likes.count }} like{{ post.likes.count|pluralize }}
+                </p>
+            {% endif %}
+            
+            {% if post.caption %}
+                <p style="margin: 0 0 15px 0; color: var(--ig-text-primary);">
+                    <strong>{{ post.author.username }}</strong> {{ post.caption|linebreaks }}
+                </p>
+            {% endif %}
+            
+            {% if comments.count > 0 %}
+                <p style="margin: 0 0 15px 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
+                    View all {{ comments.count }} comment{{ comments.count|pluralize }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Comments Section -->
+    <div class="card-modern">
+        <div class="posts-header">
+            <h5>
+                <i class="fas fa-comments"></i> 
+                Comments
+                <span style="color: var(--ig-text-secondary); font-weight: normal;">({{ comments.count }})</span>
+            </h5>
+        </div>
+        
+        <!-- Add Comment Form -->
+        {% if user.is_authenticated %}
+            <div style="padding: 20px; border-bottom: 1px solid var(--ig-border);">
+                <form id="comment-form" method="post" action="{% url 'posts:add_comment' post.pk %}">
+                    {% csrf_token %}
+                    <div style="display: flex; gap: 15px; align-items: flex-start;">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}"
+                                 alt="{{ user.username }}"
+                                 style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
+                        {% else %}
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <div style="flex: 1;">
+                            <textarea 
+                                name="content"
+                                placeholder="Add a comment..."
+                                style="width: 100%; border: 1px solid var(--ig-border); border-radius: 8px; padding: 10px; resize: vertical; min-height: 40px; font-family: inherit;"
+                                required
+                            ></textarea>
+                            <button type="submit" class="btn-gradient" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">
+                                <i class="fas fa-paper-plane"></i> Post Comment
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+        
+        <!-- Comments List -->
+        <div style="padding: 20px;">
+            {% if comments.count > 0 %}
+                {% for comment in comments %}
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; {% if not forloop.last %}border-bottom: 1px solid #f0f0f0;{% endif %}">
+                        {% if comment.author.profile.avatar %}
+                            <img src="{{ comment.author.profile.avatar.url }}"
+                                 alt="{{ comment.author.username }}"
+                                 style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
+                        {% else %}
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <div style="flex: 1;">
+                            <div style="margin-bottom: 5px;">
+                                <strong>
+                                    <a href="{% url 'accounts:profile' username=comment.author.username %}" 
+                                       style="text-decoration: none; color: var(--ig-text-primary);">
+                                        {{ comment.author.username }}
+                                    </a>
+                                </strong>
+                                <small style="color: var(--ig-text-secondary); margin-left: 10px;">
+                                    <i class="fas fa-clock"></i>
+                                    {{ comment.created_at|date:"M d, Y \a\t H:i" }}
+                                </small>
+                            </div>
+                            <p style="margin: 0; color: var(--ig-text-primary); line-height: 1.4;">
+                                {{ comment.content|linebreaks }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3rem; color: var(--ig-text-secondary); margin-bottom: 15px;">
+                        <i class="far fa-comment"></i>
+                    </div>
+                    <p style="color: var(--ig-text-secondary); margin: 0;">
+                        No comments yet. Be the first to comment!
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('comment-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+{% endblock %}

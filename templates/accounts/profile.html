@@ -1,98 +1,166 @@
 {% extends 'base.html' %}
 
-{% block title %}
-  {{ profile_user.username }} - Instaclone 2010{% endblock %}
+{% block title %}{{ profile_user.username }} - Instaclone 2010{% endblock %}
 
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-10 col-lg-8">
-      <div class="card profile-card">
-        <div class="card-header">
-          <div class="d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">User Profile</h3>
-            {% if user == profile_user %}
-              <span class="badge badge-primary">My Profile</span>
-            {% endif %}
-          </div>
-        </div>
-        <div class="card-body profile-info">
-          <div class="row">
-            <div class="col-md-4 text-center mb-3">
-              {% if profile_user.profile.avatar %}
-                <img src="{{ profile_user.profile.avatar.url }}"
-                     alt="Avatar"
-                     class="img-fluid rounded-circle"
-                     style="width: 120px; height: 120px; object-fit: cover;">
-              {% else %}
-                <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center"
-                     style="width: 120px; height: 120px;">
-                  <i class="fas fa-user fa-3x text-white"></i>
-                </div>
-              {% endif %}
+<div class="profile-container">
+    <!-- Profile Card -->
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-header-content">
+                <h3>
+                    <i class="fas fa-user-circle"></i> User Profile
+                </h3>
+                {% if user == profile_user %}
+                    <div class="profile-badge">
+                        <i class="fas fa-crown"></i> My Profile
+                    </div>
+                {% endif %}
             </div>
-            <div class="col-md-8">
-              <h2>@{{ profile_user.username }}</h2>
-
-              {% if profile_user.profile.profile_header %}
-                <p class="lead">{{ profile_user.profile.profile_header }}</p>
-              {% endif %}
-
-              <hr>
-
-              <div class="user-details">
-                <p>
-                  <strong>Email:</strong>
-                  <span class="text-muted">{{ profile_user.email|default:"Not specified" }}</span>
-                </p>
-                <p>
-                  <strong>First
-                          Name:</strong>
-                  <span class="text-muted">{{ profile_user.first_name|default:"Not specified" }}</span>
-                </p>
-                <p>
-                  <strong>Last
-                          Name:</strong>
-                  <span class="text-muted">{{ profile_user.last_name|default:"Not specified" }}</span>
-                </p>
-                <p>
-                  <strong>Join
-                          Date:</strong>
-                  <span class="text-muted">{{ profile_user.date_joined|date:"M d, Y" }}</span>
-                </p>
-              </div>
-
-              {% if user != profile_user %}
-                <div class="mt-3">
-                  <button class="btn btn-primary">Follow</button>
-                  <button class="btn btn-outline-primary">Message</button>
-                </div>
-              {% endif %}
-            </div>
-          </div>
         </div>
+
+        <div class="profile-body">
+            <div class="profile-info-row">
+                <!-- Avatar Section -->
+                <div class="profile-avatar-section">
+                    {% if profile_user.profile.avatar %}
+                        <img src="{{ profile_user.profile.avatar.url }}"
+                             alt="{{ profile_user.username }}'s avatar"
+                             class="profile-avatar">
+                    {% else %}
+                        <div class="profile-avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Profile Details -->
+                <div class="profile-details">
+                    <h2 class="profile-username">{{ profile_user.username }}</h2>
+
+                    {% if profile_user.profile.profile_header %}
+                        <p class="profile-header-text">
+                            <i class="fas fa-quote-left"></i>
+                            {{ profile_user.profile.profile_header }}
+                            <i class="fas fa-quote-right"></i>
+                        </p>
+                    {% endif %}
+
+                    <hr class="profile-divider">
+
+                    <div class="user-details">
+                        <div class="user-detail">
+                            <strong><i class="fas fa-envelope"></i> Email:</strong>
+                            <span>{{ profile_user.email|default:"Not specified" }}</span>
+                        </div>
+                        <div class="user-detail">
+                            <strong><i class="fas fa-user"></i> First Name:</strong>
+                            <span>{{ profile_user.first_name|default:"Not specified" }}</span>
+                        </div>
+                        <div class="user-detail">
+                            <strong><i class="fas fa-user"></i> Last Name:</strong>
+                            <span>{{ profile_user.last_name|default:"Not specified" }}</span>
+                        </div>
+                        <div class="user-detail">
+                            <strong><i class="fas fa-phone"></i> Phone:</strong>
+                            <span>{{ profile_user.phone|default:"Not specified" }}</span>
+                        </div>
+                        <div class="user-detail">
+                            <strong><i class="fas fa-calendar-alt"></i> Joined:</strong>
+                            <span>{{ profile_user.date_joined|date:"F d, Y" }}</span>
+                        </div>
+                        <div class="user-detail">
+                            <strong><i class="fas fa-images"></i> Posts:</strong>
+                            <span>{{ posts_count }} post{{ posts_count|pluralize }}</span>
+                        </div>
+                    </div>
+
+                    {% if user != profile_user %}
+                        <div class="profile-actions">
+                            <button class="btn-gradient">
+                                <i class="fas fa-user-plus"></i> Follow
+                            </button>
+                            <button class="btn-outline-gradient">
+                                <i class="fas fa-envelope"></i> Message
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
         {% if user == profile_user %}
-          <div class="card-footer bg-transparent">
-            <div class="d-flex justify-content-between">
-              <button class="btn btn-outline-primary">Edit Profile</button>
-              <small class="text-muted align-self-center">Last login: {{ user.last_login|date:"M d, Y H:i"|default:"Unknown" }}</small>
+            <div class="profile-footer">
+                <button class="btn-outline-gradient">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+                <div class="last-login">
+                    <i class="fas fa-clock"></i>
+                    Last login: {{ user.last_login|date:"M d, Y H:i"|default:"Unknown" }}
+                </div>
             </div>
-          </div>
         {% endif %}
-      </div>
-
-      <!-- Posts section placeholder -->
-      <div class="card mt-4">
-        <div class="card-header">
-          <h5 class="mb-0">Posts</h5>
-        </div>
-        <div class="card-body text-center">
-          <p class="text-muted">No posts yet</p>
-        </div>
-      </div>
     </div>
-  </div>
 
-  {% block extra_css %}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  {% endblock %}
+    <!-- Posts Section -->
+    <div class="posts-card">
+        <div class="posts-header">
+            <h5>
+                <i class="fas fa-images"></i>
+                {% if user == profile_user %}
+                    My Posts
+                {% else %}
+                    {{ profile_user.username }}'s Posts
+                {% endif %}
+                <span style="color: var(--ig-text-secondary); font-weight: normal;">({{ posts_count }})</span>
+            </h5>
+        </div>
+        <div class="posts-body">
+            {% if posts_count > 0 %}
+                <div class="row">
+                    {% for post in posts %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card-modern">
+                                <a href="{% url 'posts:detail' post.pk %}" style="text-decoration: none;">
+                                    <img src="{{ post.image.url }}"
+                                         alt="Post by {{ post.author.username }}"
+                                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px;">
+                                </a>
+                                <div style="padding: 15px;">
+                                    <p style="margin: 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
+                                        <i class="fas fa-clock"></i>
+                                        {{ post.created_at|date:"M d, Y" }}
+                                    </p>
+                                    {% if post.caption %}
+                                        <p style="margin: 10px 0 0 0; color: var(--ig-text-primary);">
+                                            {{ post.caption|truncatewords:10 }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div>
+                    <div style="font-size: 4rem; color: var(--ig-text-secondary); margin-bottom: 20px;">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <p class="posts-empty">
+                        {% if user == profile_user %}
+                            You haven't shared any posts yet
+                        {% else %}
+                            No posts shared yet
+                        {% endif %}
+                    </p>
+                    {% if user == profile_user %}
+                        <a href="{% url 'posts:create' %}" class="btn-gradient">
+                            <i class="fas fa-plus-circle"></i> Share Your First Post
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
