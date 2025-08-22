@@ -8,8 +8,8 @@ from accounts.models import User
 
 from accounts.forms import UserRegisterForm
 
-class HomeLoginView(LoginView):
-    template_name = "accounts/login.html"
+class IndexView(LoginView):
+    template_name = "accounts/index.html"
     redirect_authenticated_user = True
 
     def get_success_url(self):
@@ -19,7 +19,7 @@ class HomeLoginView(LoginView):
 class UserRegisterView(CreateView):
     form_class = UserRegisterForm
     template_name = "accounts/registration.html"
-    success_url = reverse_lazy("accounts:home")
+    success_url = reverse_lazy("accounts:index")
 
     def form_valid(self, form):
         response = super().form_valid(form)
