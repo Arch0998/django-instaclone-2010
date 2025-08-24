@@ -41,7 +41,7 @@ class UserProfile(models.Model):
         related_name="profile"
     )
     avatar = models.ImageField(
-        upload_to="avatars/",
+        upload_to="media/avatars/",
         null=True,
         blank=True
     )

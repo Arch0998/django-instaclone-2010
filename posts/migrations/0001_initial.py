@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("image", models.ImageField(upload_to="posts/%Y/%m/%d/")),
+                ("image", models.ImageField(upload_to="media/posts/%Y/%m/%d/")),
                 ("caption", models.TextField(blank=True)),
                 ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
                 ("updated_at", models.DateTimeField(auto_now=True)),

@@ -12,7 +12,7 @@ class Post(models.Model):
         related_name="posts"
     )
     image = models.ImageField(
-        upload_to="posts/%Y/%m/%d/",
+        upload_to="media/posts/%Y/%m/%d/",
         blank=False,
         null=False
     )
