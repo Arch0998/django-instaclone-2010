@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
-from accounts.models import User
+from accounts.models import User, UserProfile
 
 
 class UserRegisterForm(UserCreationForm):
@@ -37,3 +37,53 @@ class UserRegisterForm(UserCreationForm):
                 "A user with this phone number already exists."
             )
         return phone
+
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email", "phone"]
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+        self.fields["email"].required = True
+    
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exclude(
+                id=self.user.id if self.user else None
+        ).exists():
+            raise ValidationError("A user with this email already exists.")
+        return email
+    
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        if User.objects.filter(phone=phone).exclude(
+                id=self.user.id if self.user else None
+        ).exists():
+            raise ValidationError("A user with this phone number already exists.")
+        return phone
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ["avatar", "profile_header"]
+        widgets = {
+            "profile_header": forms.TextInput(attrs={
+                "placeholder": "Tell people about yourself...",
+                "maxlength": "50"
+            })
+        }
+    
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get("avatar")
+        if avatar:
+            if avatar.size > 5 * 1024 * 1024:
+                raise ValidationError("Avatar file size should not exceed 5MB.")
+                
+            if not avatar.content_type.startswith('image/'):
+                raise ValidationError("Avatar must be an image file.")
+
+        return avatar
