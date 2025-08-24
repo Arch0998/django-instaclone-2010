@@ -4,28 +4,29 @@
 
 {% block content %}
 <div class="auth-container">
-    <div class="auth-card" style="max-width: 500px;">
+    <div class="auth-card" style="max-width: 600px;">
         <div class="auth-header">
             <h3 class="gradient-text">
                 <i class="fas fa-user-edit"></i>
-                Edit Profile
+                Edit Profile & Account
             </h3>
-            <p style="color: var(--ig-text-secondary); margin: 0;">Update your profile information</p>
+            <p style="color: var(--ig-text-secondary); margin: 0;">Update your profile and account information</p>
         </div>
 
         <div class="auth-body">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
+                <!-- Profile Picture Section -->
                 <div class="form-group-custom">
-                    <label for="{{ form.avatar.id_for_label }}" class="form-label-custom">
+                    <label for="{{ profile_form.avatar.id_for_label }}" class="form-label-custom">
                         <i class="fas fa-camera"></i> Profile Picture
                     </label>
 
                     <!-- Current Avatar Preview -->
-                    {% if form.instance.avatar %}
+                    {% if user.profile.avatar %}
                         <div style="text-align: center; margin-bottom: 15px;">
-                            <img src="{{ form.instance.avatar.url }}"
+                            <img src="{{ user.profile.avatar.url }}"
                                  alt="Current avatar"
                                  style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--ig-border);">
                             <p style="margin: 10px 0 0 0; color: var(--ig-text-secondary); font-size: 0.9rem;">Current avatar</p>
@@ -34,15 +35,15 @@
 
                     <input
                         type="file"
-                        name="{{ form.avatar.name }}"
-                        id="{{ form.avatar.id_for_label }}"
+                        name="{{ profile_form.avatar.name }}"
+                        id="{{ profile_form.avatar.id_for_label }}"
                         class="form-control-custom"
                         accept="image/*"
                         onchange="previewAvatar(this)"
                     >
-                    {% if form.avatar.errors %}
+                    {% if profile_form.avatar.errors %}
                         <ul class="errorlist">
-                            {% for error in form.avatar.errors %}
+                            {% for error in profile_form.avatar.errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
                         </ul>
@@ -60,22 +61,23 @@
                     </small>
                 </div>
 
+                <!-- Bio Section -->
                 <div class="form-group-custom">
-                    <label for="{{ form.profile_header.id_for_label }}" class="form-label-custom">
+                    <label for="{{ profile_form.profile_header.id_for_label }}" class="form-label-custom">
                         <i class="fas fa-quote-left"></i> Bio/Header
                     </label>
                     <input
                         type="text"
-                        name="{{ form.profile_header.name }}"
-                        id="{{ form.profile_header.id_for_label }}"
+                        name="{{ profile_form.profile_header.name }}"
+                        id="{{ profile_form.profile_header.id_for_label }}"
                         class="form-control-custom"
                         placeholder="Tell people about yourself..."
-                        value="{{ form.profile_header.value|default:'' }}"
+                        value="{{ profile_form.profile_header.value|default:'' }}"
                         maxlength="50"
                     >
-                    {% if form.profile_header.errors %}
+                    {% if profile_form.profile_header.errors %}
                         <ul class="errorlist">
-                            {% for error in form.profile_header.errors %}
+                            {% for error in profile_form.profile_header.errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
                         </ul>
@@ -85,17 +87,120 @@
                     </small>
                 </div>
 
-                {% if form.non_field_errors %}
+                <hr style="margin: 30px 0; border: none; height: 1px; background: var(--ig-border);">
+
+                <!-- Account Information Section -->
+                <h5 style="margin-bottom: 20px; color: var(--ig-text-primary);">
+                    <i class="fas fa-user-cog"></i> Account Information
+                </h5>
+
+                <!-- Name Fields -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group-custom">
+                            <label for="{{ user_form.first_name.id_for_label }}" class="form-label-custom">
+                                <i class="fas fa-user"></i> First Name
+                            </label>
+                            <input
+                                type="text"
+                                name="{{ user_form.first_name.name }}"
+                                id="{{ user_form.first_name.id_for_label }}"
+                                class="form-control-custom"
+                                value="{{ user_form.first_name.value|default:user.first_name }}"
+                                required
+                            >
+                            {% if user_form.first_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in user_form.first_name.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group-custom">
+                            <label for="{{ user_form.last_name.id_for_label }}" class="form-label-custom">
+                                <i class="fas fa-user"></i> Last Name
+                            </label>
+                            <input
+                                type="text"
+                                name="{{ user_form.last_name.name }}"
+                                id="{{ user_form.last_name.id_for_label }}"
+                                class="form-control-custom"
+                                value="{{ user_form.last_name.value|default:user.last_name }}"
+                                required
+                            >
+                            {% if user_form.last_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in user_form.last_name.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group-custom">
+                    <label for="{{ user_form.email.id_for_label }}" class="form-label-custom">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input
+                        type="email"
+                        name="{{ user_form.email.name }}"
+                        id="{{ user_form.email.id_for_label }}"
+                        class="form-control-custom"
+                        value="{{ user_form.email.value|default:user.email }}"
+                        required
+                    >
+                    {% if user_form.email.errors %}
+                        <ul class="errorlist">
+                            {% for error in user_form.email.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Phone Field -->
+                <div class="form-group-custom">
+                    <label for="{{ user_form.phone.id_for_label }}" class="form-label-custom">
+                        <i class="fas fa-phone"></i> Phone Number
+                    </label>
+                    <input
+                        type="tel"
+                        name="{{ user_form.phone.name }}"
+                        id="{{ user_form.phone.id_for_label }}"
+                        class="form-control-custom"
+                        value="{{ user_form.phone.value|default:user.phone }}"
+                        required
+                    >
+                    {% if user_form.phone.errors %}
+                        <ul class="errorlist">
+                            {% for error in user_form.phone.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Display errors -->
+                {% if user_form.non_field_errors or profile_form.non_field_errors %}
                     <div class="alert-custom alert-danger">
-                        {% for error in form.non_field_errors %}
+                        {% for error in user_form.non_field_errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                        {% for error in profile_form.non_field_errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% endif %}
 
-                <div style="display: flex; gap: 15px;">
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <button type="submit" class="btn-gradient" style="flex: 1;">
-                        <i class="fas fa-save"></i> Save Changes
+                        <i class="fas fa-save"></i> Save All Changes
                     </button>
                     <a href="{% url 'accounts:profile' username=user.username %}" class="btn-outline-gradient"
                        style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
@@ -126,461 +231,4 @@ function previewAvatar(input) {
     }
 }
 </script>
-{% endblock %}
-
-<!-- templates/accounts/edit_user.html -->
-{% extends 'base.html' %}
-
-{% block title %}Edit Account - Instaclone 2010{% endblock %}
-
-{% block content %}
-<div class="auth-container">
-    <div class="auth-card" style="max-width: 500px;">
-        <div class="auth-header">
-            <h3 class="gradient-text">
-                <i class="fas fa-user-cog"></i>
-                Edit Account
-            </h3>
-            <p style="color: var(--ig-text-secondary); margin: 0;">Update your account information</p>
-        </div>
-
-        <div class="auth-body">
-            <form method="post">
-                {% csrf_token %}
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group-custom">
-                            <label for="{{ form.first_name.id_for_label }}" class="form-label-custom">
-                                <i class="fas fa-user"></i> First Name
-                            </label>
-                            <input
-                                type="text"
-                                name="{{ form.first_name.name }}"
-                                id="{{ form.first_name.id_for_label }}"
-                                class="form-control-custom"
-                                value="{{ form.first_name.value|default:'' }}"
-                                required
-                            >
-                            {% if form.first_name.errors %}
-                                <ul class="errorlist">
-                                    {% for error in form.first_name.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group-custom">
-                            <label for="{{ form.last_name.id_for_label }}" class="form-label-custom">
-                                <i class="fas fa-user"></i> Last Name
-                            </label>
-                            <input
-                                type="text"
-                                name="{{ form.last_name.name }}"
-                                id="{{ form.last_name.id_for_label }}"
-                                class="form-control-custom"
-                                value="{{ form.last_name.value|default:'' }}"
-                                required
-                            >
-                            {% if form.last_name.errors %}
-                                <ul class="errorlist">
-                                    {% for error in form.last_name.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group-custom">
-                    <label for="{{ form.email.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-envelope"></i> Email
-                    </label>
-                    <input
-                        type="email"
-                        name="{{ form.email.name }}"
-                        id="{{ form.email.id_for_label }}"
-                        class="form-control-custom"
-                        value="{{ form.email.value|default:'' }}"
-                        required
-                    >
-                    {% if form.email.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.email.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-
-                <div class="form-group-custom">
-                    <label for="{{ form.phone.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-phone"></i> Phone Number
-                    </label>
-                    <input
-                        type="tel"
-                        name="{{ form.phone.name }}"
-                        id="{{ form.phone.id_for_label }}"
-                        class="form-control-custom"
-                        value="{{ form.phone.value|default:'' }}"
-                        required
-                    >
-                    {% if form.phone.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.phone.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-
-                {% if form.non_field_errors %}
-                    <div class="alert-custom alert-danger">
-                        {% for error in form.non_field_errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                <div style="display: flex; gap: 15px;">
-                    <button type="submit" class="btn-gradient" style="flex: 1;">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                    <a href="{% url 'accounts:profile' username=user.username %}" class="btn-outline-gradient"
-                       style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-<!-- templates/posts/edit_post.html -->
-{% extends 'base.html' %}
-
-{% block title %}Edit Post - Instaclone 2010{% endblock %}
-
-{% block content %}
-<div class="auth-container">
-    <div class="auth-card" style="max-width: 600px;">
-        <div class="auth-header">
-            <h3 class="gradient-text">
-                <i class="fas fa-edit"></i>
-                Edit Post
-            </h3>
-            <p style="color: var(--ig-text-secondary); margin: 0;">Update your post caption</p>
-        </div>
-
-        <div class="auth-body">
-            <!-- Current Image Preview -->
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img src="{{ object.image.url }}" alt="Post image"
-                     style="max-width: 100%; max-height: 300px; border-radius: 12px; border: 2px solid var(--ig-border);">
-            </div>
-
-            <form method="post">
-                {% csrf_token %}
-
-                <div class="form-group-custom">
-                    <label for="{{ form.caption.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-comment"></i> Caption
-                    </label>
-                    <textarea
-                        name="{{ form.caption.name }}"
-                        id="{{ form.caption.id_for_label }}"
-                        class="form-control-custom"
-                        rows="4"
-                        placeholder="Write a caption... #hashtags #photography #moment"
-                        style="resize: vertical; min-height: 100px;"
-                    >{{ form.caption.value|default:'' }}</textarea>
-                    {% if form.caption.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.caption.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <small style="color: var(--ig-text-secondary); font-size: 0.8rem;">
-                        <i class="fas fa-hashtag"></i> Use hashtags to reach more people
-                    </small>
-                </div>
-
-                {% if form.non_field_errors %}
-                    <div class="alert-custom alert-danger">
-                        {% for error in form.non_field_errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                <div style="display: flex; gap: 15px;">
-                    <button type="submit" class="btn-gradient" style="flex: 1;">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                    <a href="{% url 'posts:detail' object.pk %}" class="btn-outline-gradient"
-                       style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-<!-- templates/accounts/search.html -->
-{% extends 'base.html' %}
-
-{% block title %}Search Users - Instaclone 2010{% endblock %}
-
-{% block content %}
-<div class="profile-container">
-    <div class="card-modern" style="margin-bottom: 30px;">
-        <div class="posts-header">
-            <h5>
-                <i class="fas fa-search"></i> Search Users
-            </h5>
-        </div>
-        <div style="padding: 20px;">
-            <form method="get" style="margin-bottom: 20px;">
-                <div style="display: flex; gap: 15px;">
-                    <input
-                        type="text"
-                        name="q"
-                        value="{{ query }}"
-                        placeholder="Search by username, first name, or last name..."
-                        style="flex: 1; padding: 12px 16px; border: 1px solid var(--ig-border); border-radius: 8px; font-size: 14px;"
-                    >
-                    <button type="submit" class="btn-gradient">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {% if query %}
-        <div class="card-modern">
-            <div class="posts-header">
-                <h6>Search Results for "{{ query }}"</h6>
-            </div>
-            <div style="padding: 20px;">
-                {% if users %}
-                    {% for found_user in users %}
-                        <div style="display: flex; align-items: center; gap: 15px; padding: 15px 0; {% if not forloop.last %}border-bottom: 1px solid var(--ig-border);{% endif %}">
-                            {% if found_user.profile.avatar %}
-                                <img src="{{ found_user.profile.avatar.url }}"
-                                     alt="{{ found_user.username }}"
-                                     style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
-                            {% else %}
-                                <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                            {% endif %}
-                            <div style="flex: 1;">
-                                <h6 style="margin: 0; font-weight: 600;">
-                                    <a href="{% url 'accounts:profile' username=found_user.username %}"
-                                       style="text-decoration: none; color: var(--ig-text-primary);">
-                                        @{{ found_user.username }}
-                                    </a>
-                                </h6>
-                                <p style="margin: 5px 0 0 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
-                                    {{ found_user.first_name }} {{ found_user.last_name }}
-                                </p>
-                                {% if found_user.profile.profile_header %}
-                                    <p style="margin: 5px 0 0 0; color: var(--ig-text-secondary); font-size: 0.8rem; font-style: italic;">
-                                        {{ found_user.profile.profile_header }}
-                                    </p>
-                                {% endif %}
-                            </div>
-                            {% if user.is_authenticated and user != found_user %}
-                                <a href="{% url 'accounts:profile' username=found_user.username %}" class="btn-outline-gradient">
-                                    <i class="fas fa-eye"></i> View Profile
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div style="text-align: center; padding: 40px;">
-                        <div style="font-size: 3rem; color: var(--ig-text-secondary); margin-bottom: 15px;">
-                            <i class="fas fa-user-slash"></i>
-                        </div>
-                        <p style="color: var(--ig-text-secondary); margin: 0;">
-                            No users found for "{{ query }}"
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    {% else %}
-        <div class="card-modern">
-            <div style="text-align: center; padding: 60px;">
-                <div style="font-size: 4rem; color: var(--ig-text-secondary); margin-bottom: 20px;">
-                    <i class="fas fa-search"></i>
-                </div>
-                <p style="color: var(--ig-text-secondary); margin: 0; font-size: 1.1rem;">
-                    Search for users by username, first name, or last name
-                </p>
-            </div>
-        </div>
-    {% endif %}
-</div>
-{% endblock %}
-
-<!-- templates/accounts/followers.html -->
-{% extends 'base.html' %}
-
-{% block title %}{{ profile_user.username }}'s Followers - Instaclone 2010{% endblock %}
-
-{% block content %}
-<div class="profile-container">
-    <div class="card-modern" style="margin-bottom: 20px;">
-        <div style="padding: 20px; display: flex; align-items: center; gap: 15px;">
-            <a href="{% url 'accounts:profile' username=profile_user.username %}"
-               style="color: var(--ig-text-secondary); font-size: 1.2rem; text-decoration: none;">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <div>
-                <h4 style="margin: 0; font-weight: 600;">@{{ profile_user.username }}'s Followers</h4>
-                <p style="margin: 0; color: var(--ig-text-secondary);">{{ count }} follower{{ count|pluralize }}</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card-modern">
-        {% if followers %}
-            <div style="padding: 20px;">
-                {% for follow in followers %}
-                    <div style="display: flex; align-items: center; gap: 15px; padding: 15px 0; {% if not forloop.last %}border-bottom: 1px solid var(--ig-border);{% endif %}">
-                        {% if follow.follower.profile.avatar %}
-                            <img src="{{ follow.follower.profile.avatar.url }}"
-                                 alt="{{ follow.follower.username }}"
-                                 style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
-                        {% else %}
-                            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        {% endif %}
-                        <div style="flex: 1;">
-                            <h6 style="margin: 0; font-weight: 600;">
-                                <a href="{% url 'accounts:profile' username=follow.follower.username %}"
-                                   style="text-decoration: none; color: var(--ig-text-primary);">
-                                    @{{ follow.follower.username }}
-                                </a>
-                            </h6>
-                            <p style="margin: 5px 0 0 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
-                                {{ follow.follower.first_name }} {{ follow.follower.last_name }}
-                            </p>
-                            <p style="margin: 5px 0 0 0; color: var(--ig-text-secondary); font-size: 0.8rem;">
-                                <i class="fas fa-calendar"></i> Following since {{ follow.created_at|date:"M Y" }}
-                            </p>
-                        </div>
-                        {% if user.is_authenticated and user != follow.follower %}
-                            <a href="{% url 'accounts:profile' username=follow.follower.username %}" class="btn-outline-gradient">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div style="text-align: center; padding: 60px;">
-                <div style="font-size: 4rem; color: var(--ig-text-secondary); margin-bottom: 20px;">
-                    <i class="fas fa-users"></i>
-                </div>
-                <p style="color: var(--ig-text-secondary); margin: 0; font-size: 1.1rem;">
-                    {% if user == profile_user %}
-                        You don't have any followers yet
-                    {% else %}
-                        {{ profile_user.username }} doesn't have any followers yet
-                    {% endif %}
-                </p>
-            </div>
-        {% endif %}
-    </div>
-</div>
-{% endblock %}
-
-<!-- templates/accounts/following.html -->
-{% extends 'base.html' %}
-
-{% block title %}{{ profile_user.username }}'s Following - Instaclone 2010{% endblock %}
-
-{% block content %}
-<div class="profile-container">
-    <div class="card-modern" style="margin-bottom: 20px;">
-        <div style="padding: 20px; display: flex; align-items: center; gap: 15px;">
-            <a href="{% url 'accounts:profile' username=profile_user.username %}"
-               style="color: var(--ig-text-secondary); font-size: 1.2rem; text-decoration: none;">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <div>
-                <h4 style="margin: 0; font-weight: 600;">@{{ profile_user.username }}'s Following</h4>
-                <p style="margin: 0; color: var(--ig-text-secondary);">Following {{ count }} user{{ count|pluralize }}</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="card-modern">
-        {% if following %}
-            <div style="padding: 20px;">
-                {% for follow in following %}
-                    <div style="display: flex; align-items: center; gap: 15px; padding: 15px 0; {% if not forloop.last %}border-bottom: 1px solid var(--ig-border);{% endif %}">
-                        {% if follow.following.profile.avatar %}
-                            <img src="{{ follow.following.profile.avatar.url }}"
-                                 alt="{{ follow.following.username }}"
-                                 style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
-                        {% else %}
-                            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        {% endif %}
-                        <div style="flex: 1;">
-                            <h6 style="margin: 0; font-weight: 600;">
-                                <a href="{% url 'accounts:profile' username=follow.following.username %}"
-                                   style="text-decoration: none; color: var(--ig-text-primary);">
-                                    @{{ follow.following.username }}
-                                </a>
-                            </h6>
-                            <p style="margin: 5px 0 0 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
-                                {{ follow.following.first_name }} {{ follow.following.last_name }}
-                            </p>
-                            <p style="margin: 5px 0 0 0; color: var(--ig-text-secondary); font-size: 0.8rem;">
-                                <i class="fas fa-calendar"></i> Following since {{ follow.created_at|date:"M Y" }}
-                            </p>
-                        </div>
-                        {% if user.is_authenticated and user != follow.following %}
-                            <a href="{% url 'accounts:profile' username=follow.following.username %}" class="btn-outline-gradient">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div style="text-align: center; padding: 60px;">
-                <div style="font-size: 4rem; color: var(--ig-text-secondary); margin-bottom: 20px;">
-                    <i class="fas fa-user-friends"></i>
-                </div>
-                <p style="color: var(--ig-text-secondary); margin: 0; font-size: 1.1rem;">
-                    {% if user == profile_user %}
-                        You're not following anyone yet
-                    {% else %}
-                        {{ profile_user.username }} isn't following anyone yet
-                    {% endif %}
-                </p>
-                {% if user == profile_user %}
-                    <a href="{% url 'accounts:search' %}" class="btn-gradient" style="margin-top: 20px;">
-                        <i class="fas fa-search"></i> Find People to Follow
-                    </a>
-                {% endif %}
-            </div>
-        {% endif %}
-    </div>
-</div>
 {% endblock %}

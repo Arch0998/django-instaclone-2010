@@ -26,11 +26,6 @@ urlpatterns = [
         name="edit_profile"
     ),
     path(
-        "account/edit/",
-        views.UserEditView.as_view(),
-        name="edit_user"
-    ),
-    path(
         "search/",
         views.SearchView.as_view(),
         name="search"

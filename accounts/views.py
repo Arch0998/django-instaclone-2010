@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, ListView
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.http import JsonResponse
 from django.views import View
 from django.contrib import messages
@@ -64,41 +64,36 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         return context
 
 
-class ProfileEditView(LoginRequiredMixin, UpdateView):
-    model = UserProfile
-    form_class = ProfileEditForm
+class ProfileEditView(LoginRequiredMixin, View):
     template_name = "accounts/edit_profile.html"
-
-    def get_object(self):
-        profile, created = UserProfile.objects.get_or_create(user=self.request.user)
-        return profile
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["user"] = self.request.user
-        return context
-
-    def get_success_url(self):
-        messages.success(self.request, "Profile updated successfully!")
-        return reverse_lazy("accounts:profile", kwargs={"username": self.request.user.username})
-
-
-class UserEditView(LoginRequiredMixin, UpdateView):
-    model = User
-    form_class = UserEditForm
-    template_name = "accounts/edit_user.html"
-
-    def get_object(self):
-        return self.request.user
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
-    def get_success_url(self):
-        messages.success(self.request, "Account information updated successfully!")
-        return reverse_lazy("accounts:profile", kwargs={"username": self.request.user.username})
+    
+    def get(self, request):
+        user_form = UserEditForm(instance=request.user, user=request.user)
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile_form = ProfileEditForm(instance=profile)
+        
+        return render(request, self.template_name, {
+            "user_form": user_form,
+            "profile_form": profile_form,
+            "user": request.user,
+        })
+    
+    def post(self, request):
+        user_form = UserEditForm(request.POST, instance=request.user, user=request.user)
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        profile_form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("accounts:profile", username=request.user.username)
+        
+        return render(request, self.template_name, {
+            "user_form": user_form,
+            "profile_form": profile_form,
+            "user": request.user,
+        })
 
 
 class FollowUserView(LoginRequiredMixin, View):
