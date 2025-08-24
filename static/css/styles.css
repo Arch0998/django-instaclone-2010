@@ -338,11 +338,6 @@ body {
   margin-bottom: 10px;
 }
 
-.profile-username::before {
-  content: '@';
-  color: var(--ig-text-secondary);
-}
-
 .profile-header-text {
   font-size: 1.1rem;
   color: var(--ig-text-secondary);
@@ -440,7 +435,7 @@ body {
   border: none;
   margin-bottom: 10px;
   display: flex;
-  justify-content: between;
+  justify-content: space-between;
   align-items: center;
 }
 

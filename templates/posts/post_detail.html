@@ -21,7 +21,7 @@
                 <h6 style="margin: 0; font-weight: 600;">
                     <a href="{% url 'accounts:profile' username=post.author.username %}" 
                        style="text-decoration: none; color: var(--ig-text-primary);">
-                        @{{ post.author.username }}
+                        {{ post.author.username }}
                     </a>
                 </h6>
                 <small style="color: var(--ig-text-secondary);">
