@@ -12,8 +12,13 @@
                     <i class="fas fa-user-circle"></i> User Profile
                 </h3>
                 {% if user == profile_user %}
-                    <div class="profile-badge">
-                        <i class="fas fa-crown"></i> My Profile
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="profile-badge">
+                            <i class="fas fa-crown"></i> My Profile
+                        </div>
+                        <a href="{% url 'accounts:edit_profile' %}" class="btn-outline-gradient" style="font-size: 0.9rem; padding: 6px 12px;">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
                     </div>
                 {% endif %}
             </div>
@@ -85,16 +90,6 @@
                 </div>
             </div>
         </div>
-
-        {% if user == profile_user %}
-            <div class="profile-footer">
-                <div style="display: flex; gap: 15px;">
-                    <a href="{% url 'accounts:edit_profile' %}" class="btn-outline-gradient">
-                        <i class="fas fa-edit"></i> Edit Profile
-                    </a>
-                </div>
-            </div>
-        {% endif %}
     </div>
 
     <!-- Posts Section -->
