@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.views import generic
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -11,7 +10,7 @@ from posts.models import Post, Comment, PostLike
 from accounts.models import User
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, generic.CreateView):
     model = Post
     fields = ["image", "caption"]
     template_name = "posts/create_post.html"
@@ -27,7 +26,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         )
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(LoginRequiredMixin, generic.DetailView):
     model = Post
     template_name = "posts/post_detail.html"
     context_object_name = "post"
@@ -44,7 +43,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class PostUpdateView(LoginRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Post
     fields = ["caption"]
     template_name = "posts/edit_post.html"
@@ -52,7 +51,10 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         obj = super().get_object()
         if obj.author != self.request.user:
-            messages.error(self.request, "You can only edit your own posts.")
+            messages.error(
+                self.request,
+                "You can only edit your own posts."
+            )
             return redirect('posts:detail', pk=obj.pk)
         return obj
     
@@ -61,16 +63,19 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("posts:detail", kwargs={'pk': self.object.pk})
 
 
-class PostDeleteView(LoginRequiredMixin, DeleteView):
+class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Post
     
     def get_object(self):
         obj = super().get_object()
         if obj.author != self.request.user:
-            messages.error(self.request, "You can only delete your own posts.")
+            messages.error(
+                self.request,
+                "You can only delete your own posts."
+            )
             return redirect('posts:detail', pk=obj.pk)
         return obj
-    
+
     def get_success_url(self):
         messages.success(self.request, "Post deleted successfully!")
         return reverse_lazy(
@@ -79,7 +84,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
         )
 
 
-class AddCommentView(LoginRequiredMixin, View):
+class AddCommentView(LoginRequiredMixin, generic.View):
     def post(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         content = request.POST.get("content")
@@ -92,16 +97,16 @@ class AddCommentView(LoginRequiredMixin, View):
         return JsonResponse({"success": True})
 
 
-class DeleteCommentView(LoginRequiredMixin, View):
+class DeleteCommentView(LoginRequiredMixin, generic.View):
     def post(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
-        if comment.author == request.user or comment.post.author == request.user:
+        if (comment.author == request.user or comment.post.author == request.user):
             comment.delete()
             return JsonResponse({"success": True})
         return JsonResponse({"success": False, "error": "Permission denied"})
 
 
-class LikePostView(LoginRequiredMixin, View):
+class LikePostView(LoginRequiredMixin, generic.View):
     def post(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         like, created = PostLike.objects.get_or_create(
@@ -123,17 +128,17 @@ class LikePostView(LoginRequiredMixin, View):
         })
 
 
-class SearchUsersView(LoginRequiredMixin, View):
+class SearchUsersView(LoginRequiredMixin, generic.View):
     def get(self, request):
         query = request.GET.get('q', '').strip()
         users = []
-        
+
         if query:
             users = User.objects.filter(
-                Q(username__icontains=query) |
-                Q(first_name__icontains=query) |
-                Q(last_name__icontains=query)
-            ).exclude(id=request.user.id if request.user.is_authenticated else None)[:10]
+                username__icontains=query
+            ).exclude(
+                id=request.user.id if request.user.is_authenticated else None
+            )[:10]
         
         return JsonResponse({
             "users": [
@@ -143,7 +148,9 @@ class SearchUsersView(LoginRequiredMixin, View):
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "avatar": user.profile.avatar.url if user.profile.avatar else None,
-                    "profile_url": reverse_lazy("accounts:profile", kwargs={"username": user.username})
+                    "profile_url": reverse_lazy(
+                        "accounts:profile", kwargs={"username": user.username}
+                    )
                 }
                 for user in users
             ]

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Post - Instaclone 2010{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 500px;">
+        <div class="auth-header">
+            <h3 style="color: var(--ig-pink);">
+                <i class="fas fa-exclamation-triangle"></i>
+                Delete Post
+            </h3>
+            <p style="color: var(--ig-text-secondary); margin: 0;">This action cannot be undone</p>
+        </div>
+
+        <div class="auth-body">
+            <!-- Post Preview -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="{{ object.image.url }}" alt="Post to delete"
+                     style="max-width: 100%; max-height: 200px; border-radius: 12px; border: 2px solid var(--ig-border);">
+                {% if object.caption %}
+                    <p style="margin: 10px 0 0 0; color: var(--ig-text-primary); font-style: italic;">
+                        "{{ object.caption|truncatewords:15 }}"
+                    </p>
+                {% endif %}
+                <p style="margin: 10px 0 0 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
+                    <i class="fas fa-clock"></i> Posted {{ object.created_at|date:"M d, Y" }}
+                </p>
+            </div>
+
+            <div class="alert-custom alert-warning" style="margin-bottom: 20px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Warning:</strong> This will permanently delete your post and all its comments. This action cannot be undone.
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div style="display: flex; gap: 15px;">
+                    <button type="submit" class="btn-gradient"
+                            style="flex: 1; background: linear-gradient(45deg, var(--ig-pink), #e91e63); color: white;">
+                        <i class="fas fa-trash"></i> Yes, Delete Post
+                    </button>
+                    <a href="{% url 'posts:detail' object.pk %}" class="btn-outline-gradient"
+                       style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -21,7 +21,38 @@ urlpatterns = [
         name="registration"
     ),
     path(
+        "profile/edit/",
+        views.ProfileEditView.as_view(),
+        name="edit_profile"
+    ),
+    path(
+        "account/edit/",
+        views.UserEditView.as_view(),
+        name="edit_user"
+    ),
+    path(
+        "search/",
+        views.SearchView.as_view(),
+        name="search"
+    ),
+    path(
         "user/<str:username>/",
         views.UserProfileView.as_view(),
-        name="profile"),
+        name="profile"
+    ),
+    path(
+        "user/<str:username>/follow/",
+        views.FollowUserView.as_view(),
+        name="follow"
+    ),
+    path(
+        "user/<str:username>/followers/",
+        views.FollowersListView.as_view(),
+        name="followers"
+    ),
+    path(
+        "user/<str:username>/following/",
+        views.FollowingListView.as_view(),
+        name="following"
+    ),
 ]

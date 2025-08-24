@@ -14,8 +14,34 @@ urlpatterns = [
         views.PostDetailView.as_view(),
         name="detail"
     ),
-    path("<int:pk>/comment/",
-         views.AddCommentView.as_view(),
-         name="add_comment"
-         )
+    path(
+        "<int:pk>/edit/",
+        views.PostUpdateView.as_view(),
+        name="edit"
+    ),
+    path(
+        "<int:pk>/delete/",
+        views.PostDeleteView.as_view(),
+        name="delete"
+    ),
+    path(
+        "<int:pk>/comment/",
+        views.AddCommentView.as_view(),
+        name="add_comment"
+    ),
+    path(
+        "comment/<int:pk>/delete/",
+        views.DeleteCommentView.as_view(),
+        name="delete_comment"
+    ),
+    path(
+        "<int:pk>/like/",
+        views.LikePostView.as_view(),
+        name="like"
+    ),
+    path(
+        "search-users/",
+        views.SearchUsersView.as_view(),
+        name="search_users"
+    ),
 ]
