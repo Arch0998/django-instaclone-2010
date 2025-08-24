@@ -1,158 +1,163 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Create Post - Instaclone 2010{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="auth-container">
+  <div class="auth-container">
     <div class="auth-card" style="max-width: 600px;">
-        <div class="auth-header">
-            <h3 class="gradient-text">
-                <i class="fas fa-plus-circle"></i>
-                Create New Post
-            </h3>
-            <p style="color: var(--ig-text-secondary); margin: 0;">Share your moment with the world</p>
-        </div>
+      <div class="auth-header">
+        <h3 class="gradient-text">
+          <i class="fas fa-plus-circle"></i>
+          Create New Post
+        </h3>
+        <p class="form-help-text">
+          Share your moment with the world</p>
+      </div>
 
-        <div class="auth-body">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+      <div class="auth-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
 
-                <div class="form-group-custom">
-                    <label for="{{ form.image.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-image"></i> Choose Image
-                    </label>
-                    <input
-                        type="file"
-                        name="{{ form.image.name }}"
-                        id="{{ form.image.id_for_label }}"
-                        class="form-control-custom"
-                        accept="image/*"
-                        required
-                        onchange="previewImage(this)"
-                    >
-                    {% if form.image.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.image.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <small style="color: var(--ig-text-secondary); font-size: 0.8rem;">
-                        <i class="fas fa-info-circle"></i> Supported formats: JPG, PNG
-                    </small>
-                </div>
+          <div class="form-group-custom">
+            <label for="{{ form.image.id_for_label }}" class="form-label-custom">
+              <i class="fas fa-image"></i>
+              Choose Image
+            </label>
+            <input
+                type="file"
+                name="{{ form.image.name }}"
+                id="{{ form.image.id_for_label }}"
+                class="form-control-custom"
+                accept="image/*"
+                required
+                onchange="previewImage(this)"
+            >
+            {% if form.image.errors %}
+              <ul class="errorlist">
+                {% for error in form.image.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <small class="form-help-text">
+              <i class="fas fa-info-circle"></i>
+              Supported formats: JPG and JPEG
+            </small>
+          </div>
 
-                <!-- Image Preview -->
-                <div id="image-preview" style="display: none; margin-bottom: 20px; text-align: center;">
-                    <img id="preview-img" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; border: 2px solid var(--ig-border);">
-                </div>
+          <div id="image-preview" class="form-preview-container">
+            <img id="preview-img" src="" alt="Preview" class="form-preview-image">
+          </div>
 
-                <div class="form-group-custom">
-                    <label for="{{ form.caption.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-comment"></i> Caption
-                    </label>
-                    <textarea
-                        name="{{ form.caption.name }}"
-                        id="{{ form.caption.id_for_label }}"
-                        class="form-control-custom"
-                        rows="4"
-                        placeholder="Write a caption... #hashtags #photography #moment"
-                        style="resize: vertical; min-height: 100px;"
-                        oninput="highlightHashtags(this)"
-                    >{{ form.caption.value|default:'' }}</textarea>
-                    {% if form.caption.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.caption.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <small style="color: var(--ig-text-secondary); font-size: 0.8rem;">
-                        <i class="fas fa-hashtag"></i> Use hashtags to reach more people
-                    </small>
+          <div class="form-group-custom">
+            <label for="{{ form.caption.id_for_label }}" class="form-label-custom">
+              <i class="fas fa-comment"></i>
+              Caption
+            </label>
+            <textarea
+                name="{{ form.caption.name }}"
+                id="{{ form.caption.id_for_label }}"
+                class="form-control-custom"
+                rows="4"
+                placeholder="Write a caption... #hashtags #photography #moment"
+                style="resize: vertical; min-height: 100px;"
+                oninput="highlightHashtags(this)"
+            >{{ form.caption.value|default:'' }}</textarea>
+            {% if form.caption.errors %}
+              <ul class="errorlist">
+                {% for error in form.caption.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <small class="form-help-text">
+              <i class="fas fa-hashtag"></i>
+              Use hashtags to reach more people
+            </small>
 
-                    <!-- Hashtag Preview -->
-                    <div id="hashtag-preview" style="margin-top: 10px; display: none;">
-                        <p style="font-size: 0.9rem; margin-bottom: 5px;">Hashtags detected:</p>
-                        <div id="hashtags-container" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
-                    </div>
-                </div>
+            <div id="hashtag-preview" class="hashtag-preview-container">
+              <p class="hashtag-preview-title">
+                Hashtags
+                detected:</p>
+              <div id="hashtags-container" class="hashtags-container"></div>
+            </div>
+          </div>
 
-                {% if form.non_field_errors %}
-                    <div class="alert-custom alert-danger">
-                        {% for error in form.non_field_errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+          {% if form.non_field_errors %}
+            <div class="alert-custom alert-danger">
+              {% for error in form.non_field_errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
 
-                <div style="display: flex; gap: 15px;">
-                    <button type="submit" class="btn-gradient" style="flex: 1;">
-                        <i class="fas fa-share"></i> Share Post
-                    </button>
-                    <a href="{% url 'accounts:profile' username=user.username %}" class="btn-outline-gradient" style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
-                </div>
-            </form>
-        </div>
+          <div class="form-buttons">
+            <button type="submit" class="btn-gradient form-button-primary">
+              <i class="fas fa-share"></i>
+              Share Post
+            </button>
+            <a href="{% url 'accounts:profile' username=user.username %}" class="btn-outline-gradient form-button-secondary">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-function previewImage(input) {
-    const preview = document.getElementById('image-preview');
-    const previewImg = document.getElementById('preview-img');
+  <script>
+      function previewImage(input) {
+          const preview = document.getElementById('image-preview');
+          const previewImg = document.getElementById('preview-img');
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
+          if (input.files && input.files[0]) {
+              const reader = new FileReader();
 
-        reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            preview.style.display = 'block';
-        }
+              reader.onload = function (e) {
+                  previewImg.src = e.target.result;
+                  preview.style.display = 'block';
+              }
 
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        preview.style.display = 'none';
-    }
-}
+              reader.readAsDataURL(input.files[0]);
+          } else {
+              preview.style.display = 'none';
+          }
+      }
 
-function highlightHashtags(textarea) {
-    const text = textarea.value;
-    const hashtags = text.match(/#\w+/g) || [];
-    const hashtagPreview = document.getElementById('hashtag-preview');
-    const hashtagsContainer = document.getElementById('hashtags-container');
+      function highlightHashtags(textarea) {
+          const text = textarea.value;
+          const hashtags = text.match(/#\w+/g) || [];
+          const hashtagPreview = document.getElementById('hashtag-preview');
+          const hashtagsContainer = document.getElementById('hashtags-container');
 
-    if (hashtags.length > 0) {
-        hashtagPreview.style.display = 'block';
-        hashtagsContainer.innerHTML = '';
+          if (hashtags.length > 0) {
+              hashtagPreview.style.display = 'block';
+              hashtagsContainer.innerHTML = '';
 
-        // Создаем уникальный список хештегов
-        const uniqueHashtags = [...new Set(hashtags)];
+              const uniqueHashtags = [...new Set(hashtags)];
 
-        uniqueHashtags.forEach(hashtag => {
-            const tag = document.createElement('span');
-            tag.textContent = hashtag;
-            tag.style.backgroundColor = 'rgba(0, 149, 246, 0.1)';
-            tag.style.color = 'var(--ig-link)';
-            tag.style.padding = '3px 10px';
-            tag.style.borderRadius = '15px';
-            tag.style.fontSize = '0.9rem';
+              uniqueHashtags.forEach(hashtag => {
+                  const tag = document.createElement('span');
+                  tag.textContent = hashtag;
+                  tag.className = 'hashtag-tag';
+                  hashtagsContainer.appendChild(tag);
+              });
+          } else {
+              hashtagPreview.style.display = 'none';
+          }
+      }
 
-            hashtagsContainer.appendChild(tag);
-        });
-    } else {
-        hashtagPreview.style.display = 'none';
-    }
-}
-
-// Вызываем функцию при загрузке страницы для обработки сохраненного текста
-document.addEventListener('DOMContentLoaded', function() {
-    const captionTextarea = document.getElementById('{{ form.caption.id_for_label }}');
-    if (captionTextarea.value) {
-        highlightHashtags(captionTextarea);
-    }
-});
-</script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const captionTextarea = document.getElementById('{{ form.caption.id_for_label }}');
+          if (captionTextarea.value) {
+              highlightHashtags(captionTextarea);
+          }
+      });
+  </script>
 {% endblock %}

@@ -1,222 +1,236 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ profile_user.username }} - Instaclone 2010{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="profile-container">
-    <!-- Profile Card -->
+  <div class="profile-container">
+
     <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-header-content">
-                <h3>
-                    <i class="fas fa-user-circle"></i> User Profile
-                </h3>
-                {% if user == profile_user %}
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div class="profile-badge">
-                            <i class="fas fa-crown"></i> My Profile
-                        </div>
-                        <a href="{% url 'accounts:edit_profile' %}" class="btn-outline-gradient" style="font-size: 0.9rem; padding: 6px 12px;">
-                            <i class="fas fa-edit"></i> Edit Profile
-                        </a>
-                    </div>
-                {% endif %}
+      <div class="profile-header">
+        <div class="profile-header-content">
+          <h3>
+            <i class="fas fa-user-circle"></i>
+            User Profile
+          </h3>
+          {% if user == profile_user %}
+            <div class="profile-edit-controls">
+              <div class="profile-badge">
+                <i class="fas fa-crown"></i>
+                My Profile
+              </div>
+              <a href="{% url 'accounts:edit_profile' %}" class="btn-outline-gradient profile-edit-btn">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+              </a>
             </div>
+          {% endif %}
         </div>
+      </div>
 
-        <div class="profile-body">
-            <div class="profile-info-row">
-                <!-- Avatar Section -->
-                <div class="profile-avatar-section">
-                    {% if profile_user.profile.avatar %}
-                        <img src="{{ profile_user.profile.avatar.url }}"
-                             alt="{{ profile_user.username }}'s avatar"
-                             class="profile-avatar">
-                    {% else %}
-                        <div class="profile-avatar-placeholder">
-                            <i class="fas fa-user"></i>
-                        </div>
-                    {% endif %}
-                </div>
+      <div class="profile-body">
+        <div class="profile-info-row">
 
-                <!-- Profile Details -->
-                <div class="profile-details">
-                    <h2 class="profile-username">{{ profile_user.username }}</h2>
-
-                    {% if profile_user.profile.profile_header %}
-                        <p class="profile-header-text">
-                            <i class="fas fa-quote-left"></i>
-                            {{ profile_user.profile.profile_header }}
-                            <i class="fas fa-quote-right"></i>
-                        </p>
-                    {% endif %}
-
-                    <hr class="profile-divider">
-
-                    <div class="user-details">
-                        <div class="user-detail">
-                            <strong><i class="fas fa-images"></i> Posts:</strong>
-                            <span>{{ posts_count }} post{{ posts_count|pluralize }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Stats Row -->
-                    <div class="profile-stats" style="display: flex; gap: 20px; margin: 20px 0;">
-                        <a href="{% url 'accounts:followers' username=profile_user.username %}"
-                           style="text-decoration: none; color: var(--ig-text-primary);">
-                            <div class="stat-item" style="text-align: center; padding: 10px; border-radius: 8px; background: #f8f9fa; transition: all 0.3s ease;">
-                                <div style="font-weight: bold; font-size: 1.2rem;">{{ followers_count }}</div>
-                                <div style="color: var(--ig-text-secondary); font-size: 0.9rem;">Followers</div>
-                            </div>
-                        </a>
-                        <a href="{% url 'accounts:following' username=profile_user.username %}"
-                           style="text-decoration: none; color: var(--ig-text-primary);">
-                            <div class="stat-item" style="text-align: center; padding: 10px; border-radius: 8px; background: #f8f9fa; transition: all 0.3s ease;">
-                                <div style="font-weight: bold; font-size: 1.2rem;">{{ following_count }}</div>
-                                <div style="color: var(--ig-text-secondary); font-size: 0.9rem;">Following</div>
-                            </div>
-                        </a>
-                    </div>
-
-                    {% if user != profile_user and user.is_authenticated %}
-                        <div class="profile-actions">
-                            <button id="follow-btn" class="{% if is_following %}btn-outline-gradient{% else %}btn-gradient{% endif %}"
-                                    onclick="toggleFollow('{{ profile_user.username }}')">
-                                <i class="fas {% if is_following %}fa-user-minus{% else %}fa-user-plus{% endif %}"></i>
-                                <span>{% if is_following %}Unfollow{% else %}Follow{% endif %}</span>
-                            </button>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Posts Section -->
-    <div class="posts-card">
-        <div class="posts-header">
-            <h5>
-                <i class="fas fa-images"></i>
-                {% if user == profile_user %}
-                    My Posts
-                {% else %}
-                    {{ profile_user.username }}'s Posts
-                {% endif %}
-                <span style="color: var(--ig-text-secondary); font-weight: normal;">({{ posts_count }})</span>
-            </h5>
-        </div>
-        <div class="posts-body">
-            {% if posts_count > 0 %}
-                <div class="row">
-                    {% for post in posts %}
-                        <div class="col-md-4 mb-4">
-                            <div class="card-modern">
-                                <a href="{% url 'posts:detail' post.pk %}" style="text-decoration: none;">
-                                    <img src="{{ post.image.url }}"
-                                         alt="Post by {{ post.author.username }}"
-                                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px;">
-                                </a>
-                                <div style="padding: 15px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                        <p style="margin: 0; color: var(--ig-text-secondary); font-size: 0.9rem;">
-                                            <i class="fas fa-clock"></i>
-                                            {{ post.created_at|date:"M d, Y" }}
-                                        </p>
-                                        {% if user == post.author %}
-                                            <div class="dropdown">
-                                                <button style="background: none; border: none; color: var(--ig-text-secondary); cursor: pointer;" data-bs-toggle="dropdown">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="{% url 'posts:edit' post.pk %}"><i class="fas fa-edit"></i> Edit</a></li>
-                                                    <li><a class="dropdown-item text-danger" href="{% url 'posts:delete' post.pk %}" onclick="return confirm('Are you sure you want to delete this post?')"><i class="fas fa-trash"></i> Delete</a></li>
-                                                </ul>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    {% if post.caption %}
-                                        <p style="margin: 0; color: var(--ig-text-primary);">
-                                            {{ post.caption|truncatewords:10 }}
-                                        </p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+          <div class="profile-avatar-section">
+            {% if profile_user.profile.avatar %}
+              <img src="{{ profile_user.profile.avatar.url }}"
+                   alt="{{ profile_user.username }}'s avatar"
+                   class="profile-avatar">
             {% else %}
-                <div>
-                    <div style="font-size: 4rem; color: var(--ig-text-secondary); margin-bottom: 20px;">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <p class="posts-empty">
-                        {% if user == profile_user %}
-                            You haven't shared any posts yet
-                        {% else %}
-                            No posts shared yet
-                        {% endif %}
-                    </p>
-                    {% if user == profile_user %}
-                        <a href="{% url 'posts:create' %}" class="btn-gradient">
-                            <i class="fas fa-plus-circle"></i> Share Your First Post
-                        </a>
-                    {% endif %}
-                </div>
+              <div class="profile-avatar-placeholder">
+                <i class="fas fa-user"></i>
+              </div>
             {% endif %}
+          </div>
+
+          <div class="profile-details">
+            <h2 class="profile-username">{{ profile_user.username }}</h2>
+
+            {% if profile_user.profile.profile_header %}
+              <p class="profile-header-text">
+                <i class="fas fa-quote-left"></i>
+                {{ profile_user.profile.profile_header }}
+                <i class="fas fa-quote-right"></i>
+              </p>
+            {% endif %}
+
+            <hr class="profile-divider">
+
+            <div class="user-details">
+              <div class="user-detail">
+                <strong><i class="fas fa-images"></i>Posts:</strong>
+                <span>{{ posts_count }} post{{ posts_count|pluralize }}</span>
+              </div>
+            </div>
+
+            <div class="profile-stats">
+              <a href="{% url 'accounts:followers' username=profile_user.username %}" class="stat-link">
+                <div class="stat-item">
+                  <div class="stat-number">{{ followers_count }}</div>
+                  <div class="stat-label">
+                    Followers
+                  </div>
+                </div>
+              </a>
+              <a href="{% url 'accounts:following' username=profile_user.username %}" class="stat-link">
+                <div class="stat-item">
+                  <div class="stat-number">{{ following_count }}</div>
+                  <div class="stat-label">
+                    Following
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            {% if user != profile_user and user.is_authenticated %}
+              <div class="profile-actions">
+                <button id="follow-btn" class="follow-btn {% if is_following %}btn-outline-gradient{% else %}btn-gradient{% endif %}"
+                        onclick="toggleFollow('{{ profile_user.username }}')">
+                  <i class="fas {% if is_following %}fa-user-minus{% else %}fa-user-plus{% endif %}"></i>
+                  <span>{% if is_following %}
+                    Unfollow{% else %}
+                    Follow{% endif %}</span>
+                </button>
+              </div>
+            {% endif %}
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<script>
-async function toggleFollow(username) {
-    const btn = document.getElementById('follow-btn');
-    const icon = btn.querySelector('i');
-    const text = btn.querySelector('span');
+    <div class="posts-card">
+      <div class="posts-header">
+        <h5>
+          <i class="fas fa-images"></i>
+          {% if user == profile_user %}
+            MyPosts
+          {% else %}
+            {{ profile_user.username }}'s Posts
+          {% endif %}
+          <span class="posts-count">({{ posts_count }})</span>
+        </h5>
+      </div>
+      <div class="posts-body">
+        {% if posts_count > 0 %}
+          <div class="row">
+            {% for post in posts %}
+              <div class="col-md-4 mb-4">
+                <div class="card-modern">
+                  <a href="{% url 'posts:detail' post.pk %}" class="profile-post-link">
+                    <img src="{{ post.image.url }}"
+                         alt="Post by {{ post.author.username }}"
+                         class="profile-post-image">
+                  </a>
+                  <div class="profile-post-info">
+                    <div class="profile-post-meta">
+                      <p class="profile-post-date">
+                        <i class="fas fa-clock"></i>
+                        {{ post.created_at|date:"M d, Y" }}
+                      </p>
+                      {% if user == post.author %}
+                        <div class="dropdown">
+                          <button class="profile-post-options" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-h"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item" href="{% url 'posts:edit' post.pk %}"><i class="fas fa-edit"></i>
+                                Edit</a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="{% url 'posts:delete' post.pk %}" onclick="return confirm('Are you sure you want to delete this post?')"><i class="fas fa-trash"></i>
+                                Delete</a>
+                            </li>
+                          </ul>
+                        </div>
+                      {% endif %}
+                    </div>
+                    {% if post.caption %}
+                      <p class="profile-post-caption">
+                        {{ post.caption|truncatewords:10 }}
+                      </p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="posts-empty-container">
+            <div class="posts-empty-icon">
+              <i class="fas fa-camera"></i>
+            </div>
+            <p class="posts-empty">
+              {% if user == profile_user %}
+                You haven't shared any posts yet
+              {% else %}
+                No posts shared yet
+              {% endif %}
+            </p>
+            {% if user == profile_user %}
+              <a href="{% url 'posts:create' %}" class="btn-gradient">
+                <i class="fas fa-plus-circle"></i>
+                Share Your First Post
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 
-    try {
-        const response = await fetch(`/user/${username}/follow/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json',
-            },
-        });
+  <script>
+      async function toggleFollow(username) {
+          const btn = document.getElementById('follow-btn');
+          const icon = btn.querySelector('i');
+          const text = btn.querySelector('span');
 
-        const data = await response.json();
+          try {
+              const response = await fetch(`/user/${username}/follow/`, {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                      'Content-Type': 'application/json',
+                  },
+              });
 
-        if (data.success) {
-            if (data.is_following) {
-                btn.className = 'btn-outline-gradient';
-                icon.className = 'fas fa-user-minus';
-                text.textContent = 'Unfollow';
-            } else {
-                btn.className = 'btn-gradient';
-                icon.className = 'fas fa-user-plus';
-                text.textContent = 'Follow';
-            }
+              const data = await response.json();
 
-            // Update followers count if visible
-            const followersCount = document.querySelector('.stat-item:first-child div:first-child');
-            if (followersCount) {
-                followersCount.textContent = data.followers_count;
-            }
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
+              if (data.success) {
+                  if (data.is_following) {
+                      btn.className = 'follow-btn btn-outline-gradient';
+                      icon.className = 'fas fa-user-minus';
+                      text.textContent = 'Unfollow';
+                  } else {
+                      btn.className = 'follow-btn btn-gradient';
+                      icon.className = 'fas fa-user-plus';
+                      text.textContent = 'Follow';
+                  }
 
-// Add hover effects for stats
-document.querySelectorAll('.stat-item').forEach(item => {
-    item.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
-    });
+                  const followersCount = document.querySelector('.stat-item:first-child .stat-number');
+                  if (followersCount) {
+                      followersCount.textContent = data.followers_count;
+                  }
+              }
+          } catch (error) {
+              console.error('Error:', error);
+          }
+      }
 
-    item.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = 'none';
-    });
-});
-</script>
+      document.querySelectorAll('.stat-item').forEach(item => {
+          item.addEventListener('mouseenter', function () {
+              this.style.transform = 'translateY(-2px)';
+              this.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+          });
+
+          item.addEventListener('mouseleave', function () {
+              this.style.transform = 'translateY(0)';
+              this.style.boxShadow = 'none';
+          });
+      });
+  </script>
 {% endblock %}

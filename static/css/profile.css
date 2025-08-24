@@ -1,0 +1,253 @@
+.profile-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-badge {
+    background: linear-gradient(45deg, var(--ig-primary), var(--ig-accent));
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.profile-edit-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-edit-btn {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+}
+
+.profile-info-row {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.profile-avatar-section {
+    text-align: center;
+    min-width: 150px;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--ig-border);
+    transition: all 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    border-color: var(--ig-primary);
+}
+
+.profile-avatar-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ig-border), #f0f0f0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ig-text-secondary);
+    font-size: 3rem;
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.profile-username {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.profile-header-text {
+    font-size: 1.1rem;
+    color: var(--ig-text-secondary);
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.profile-divider {
+    height: 1px;
+    background: var(--ig-border);
+    margin: 20px 0;
+    border: none;
+}
+
+.user-details {
+    display: grid;
+    gap: 10px;
+}
+
+.user-detail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.user-detail strong {
+    min-width: 100px;
+    color: var(--ig-text-primary);
+}
+
+.user-detail span {
+    color: var(--ig-text-secondary);
+}
+
+.profile-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-link {
+    text-decoration: none;
+    color: var(--ig-text-primary);
+}
+
+.stat-number {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.stat-label {
+    color: var(--ig-text-secondary);
+    font-size: 0.9rem;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.follow-btn {
+    transition: all 0.3s ease;
+}
+
+.profile-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.profile-post-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-post-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.profile-post-link {
+    text-decoration: none;
+}
+
+.profile-post-info {
+    padding: 15px;
+}
+
+.profile-post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.profile-post-date {
+    margin: 0;
+    color: var(--ig-text-secondary);
+    font-size: 0.9rem;
+}
+
+.profile-post-options {
+    background: none;
+    border: none;
+    color: var(--ig-text-secondary);
+    cursor: pointer;
+}
+
+.profile-post-caption {
+    margin: 0;
+    color: var(--ig-text-primary);
+}
+
+.posts-empty-container {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.posts-empty-icon {
+    font-size: 4rem;
+    color: var(--ig-text-secondary);
+    margin-bottom: 20px;
+}
+
+.posts-empty {
+    color: var(--ig-text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .profile-info-row {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .profile-details {
+        text-align: center;
+    }
+
+    .profile-actions {
+        justify-content: center;
+    }
+
+    .profile-stats {
+        justify-content: center;
+    }
+
+    .profile-username {
+        font-size: 1.4rem;
+    }
+
+    .user-detail {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .user-detail strong {
+        min-width: auto;
+    }
+}

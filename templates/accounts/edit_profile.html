@@ -1,234 +1,246 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Edit Profile - Instaclone 2010{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="auth-container">
+  <div class="auth-container">
     <div class="auth-card" style="max-width: 600px;">
-        <div class="auth-header">
-            <h3 class="gradient-text">
-                <i class="fas fa-user-edit"></i>
-                Edit Profile & Account
-            </h3>
-            <p style="color: var(--ig-text-secondary); margin: 0;">Update your profile and account information</p>
-        </div>
+      <div class="auth-header">
+        <h3 class="gradient-text">
+          <i class="fas fa-user-edit"></i>
+          Edit Profile & Account
+        </h3>
+        <p class="form-help-text">
+          Update your profile and account information
+        </p>
+      </div>
 
-        <div class="auth-body">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+      <div class="auth-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
 
-                <!-- Profile Picture Section -->
-                <div class="form-group-custom">
-                    <label for="{{ profile_form.avatar.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-camera"></i> Profile Picture
-                    </label>
+          <div class="form-group-custom">
+            <label for="{{ profile_form.avatar.id_for_label }}" class="form-label-custom">
+              <i class="fas fa-camera"></i>
+              Profile
+              Picture
+            </label>
 
-                    <!-- Current Avatar Preview -->
-                    {% if user.profile.avatar %}
-                        <div style="text-align: center; margin-bottom: 15px;">
-                            <img src="{{ user.profile.avatar.url }}"
-                                 alt="Current avatar"
-                                 style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--ig-border);">
-                            <p style="margin: 10px 0 0 0; color: var(--ig-text-secondary); font-size: 0.9rem;">Current avatar</p>
-                        </div>
-                    {% endif %}
+            {% if user.profile.avatar %}
+              <div class="current-avatar-container">
+                <img src="{{ user.profile.avatar.url }}"
+                     alt="Current avatar"
+                     class="current-avatar-image">
+                <p class="current-avatar-label">
+                  Current
+                  avatar</p>
+              </div>
+            {% endif %}
 
-                    <input
-                        type="file"
-                        name="{{ profile_form.avatar.name }}"
-                        id="{{ profile_form.avatar.id_for_label }}"
-                        class="form-control-custom"
-                        accept="image/*"
-                        onchange="previewAvatar(this)"
-                    >
-                    {% if profile_form.avatar.errors %}
-                        <ul class="errorlist">
-                            {% for error in profile_form.avatar.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+            <input
+                type="file"
+                name="{{ profile_form.avatar.name }}"
+                id="{{ profile_form.avatar.id_for_label }}"
+                class="form-control-custom"
+                accept="image/*"
+                onchange="previewAvatar(this)"
+            >
+            {% if profile_form.avatar.errors %}
+              <ul class="errorlist">
+                {% for error in profile_form.avatar.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
 
-                    <!-- New Avatar Preview -->
-                    <div id="avatar-preview" style="display: none; text-align: center; margin-top: 15px;">
-                        <img id="preview-avatar" src="" alt="Preview"
-                             style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--ig-primary);">
-                        <p style="margin: 10px 0 0 0; color: var(--ig-primary); font-size: 0.9rem;">New avatar preview</p>
-                    </div>
+            <div id="avatar-preview" class="avatar-preview-container">
+              <img id="preview-avatar" src="" alt="Preview" class="avatar-preview-image">
+              <p class="avatar-preview-label">
+                New avatar preview
+              </p>
+            </div>
 
-                    <small style="color: var(--ig-text-secondary); font-size: 0.8rem;">
-                        <i class="fas fa-info-circle"></i> JPG, PNG files only. Max 5MB.
-                    </small>
-                </div>
+            <small class="form-help-text">
+              <i class="fas fa-info-circle"></i>
+              JPG and JPEG files only. Max 5MB.
+            </small>
+          </div>
 
-                <!-- Bio Section -->
-                <div class="form-group-custom">
-                    <label for="{{ profile_form.profile_header.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-quote-left"></i> Bio/Header
-                    </label>
-                    <input
-                        type="text"
-                        name="{{ profile_form.profile_header.name }}"
-                        id="{{ profile_form.profile_header.id_for_label }}"
-                        class="form-control-custom"
-                        placeholder="Tell people about yourself..."
-                        value="{{ profile_form.profile_header.value|default:'' }}"
-                        maxlength="50"
-                    >
-                    {% if profile_form.profile_header.errors %}
-                        <ul class="errorlist">
-                            {% for error in profile_form.profile_header.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <small style="color: var(--ig-text-secondary); font-size: 0.8rem;">
-                        <i class="fas fa-info-circle"></i> Maximum 50 characters
-                    </small>
-                </div>
+          <div class="form-group-custom">
+            <label for="{{ profile_form.profile_header.id_for_label }}" class="form-label-custom">
+              <i class="fas fa-quote-left"></i>
+              Bio/Header
+            </label>
+            <input
+                type="text"
+                name="{{ profile_form.profile_header.name }}"
+                id="{{ profile_form.profile_header.id_for_label }}"
+                class="form-control-custom"
+                placeholder="Tell people about yourself..."
+                value="{{ profile_form.profile_header.value|default:'' }}"
+                maxlength="50"
+            >
+            {% if profile_form.profile_header.errors %}
+              <ul class="errorlist">
+                {% for error in profile_form.profile_header.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <small class="form-help-text">
+              <i class="fas fa-info-circle"></i>
+              Maximum 50 characters
+            </small>
+          </div>
 
-                <hr style="margin: 30px 0; border: none; height: 1px; background: var(--ig-border);">
+          <hr class="form-section-divider">
 
-                <!-- Account Information Section -->
-                <h5 style="margin-bottom: 20px; color: var(--ig-text-primary);">
-                    <i class="fas fa-user-cog"></i> Account Information
-                </h5>
+          <h5 class="form-section-title">
+            <i class="fas fa-user-cog"></i>
+            Account Information
+          </h5>
 
-                <!-- Name Fields -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group-custom">
-                            <label for="{{ user_form.first_name.id_for_label }}" class="form-label-custom">
-                                <i class="fas fa-user"></i> First Name
-                            </label>
-                            <input
-                                type="text"
-                                name="{{ user_form.first_name.name }}"
-                                id="{{ user_form.first_name.id_for_label }}"
-                                class="form-control-custom"
-                                value="{{ user_form.first_name.value|default:user.first_name }}"
-                                required
-                            >
-                            {% if user_form.first_name.errors %}
-                                <ul class="errorlist">
-                                    {% for error in user_form.first_name.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group-custom">
-                            <label for="{{ user_form.last_name.id_for_label }}" class="form-label-custom">
-                                <i class="fas fa-user"></i> Last Name
-                            </label>
-                            <input
-                                type="text"
-                                name="{{ user_form.last_name.name }}"
-                                id="{{ user_form.last_name.id_for_label }}"
-                                class="form-control-custom"
-                                value="{{ user_form.last_name.value|default:user.last_name }}"
-                                required
-                            >
-                            {% if user_form.last_name.errors %}
-                                <ul class="errorlist">
-                                    {% for error in user_form.last_name.errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Email Field -->
-                <div class="form-group-custom">
-                    <label for="{{ user_form.email.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-envelope"></i> Email
-                    </label>
-                    <input
-                        type="email"
-                        name="{{ user_form.email.name }}"
-                        id="{{ user_form.email.id_for_label }}"
-                        class="form-control-custom"
-                        value="{{ user_form.email.value|default:user.email }}"
-                        required
-                    >
-                    {% if user_form.email.errors %}
-                        <ul class="errorlist">
-                            {% for error in user_form.email.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-
-                <!-- Phone Field -->
-                <div class="form-group-custom">
-                    <label for="{{ user_form.phone.id_for_label }}" class="form-label-custom">
-                        <i class="fas fa-phone"></i> Phone Number
-                    </label>
-                    <input
-                        type="tel"
-                        name="{{ user_form.phone.name }}"
-                        id="{{ user_form.phone.id_for_label }}"
-                        class="form-control-custom"
-                        value="{{ user_form.phone.value|default:user.phone }}"
-                        required
-                    >
-                    {% if user_form.phone.errors %}
-                        <ul class="errorlist">
-                            {% for error in user_form.phone.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-
-                <!-- Display errors -->
-                {% if user_form.non_field_errors or profile_form.non_field_errors %}
-                    <div class="alert-custom alert-danger">
-                        {% for error in user_form.non_field_errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                        {% for error in profile_form.non_field_errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group-custom">
+                <label for="{{ user_form.first_name.id_for_label }}" class="form-label-custom">
+                  <i class="fas fa-user"></i>
+                  First Name
+                </label>
+                <input
+                    type="text"
+                    name="{{ user_form.first_name.name }}"
+                    id="{{ user_form.first_name.id_for_label }}"
+                    class="form-control-custom"
+                    value="{{ user_form.first_name.value|default:user.first_name }}"
+                    required
+                >
+                {% if user_form.first_name.errors %}
+                  <ul class="errorlist">
+                    {% for error in user_form.first_name.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
                 {% endif %}
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group-custom">
+                <label for="{{ user_form.last_name.id_for_label }}" class="form-label-custom">
+                  <i class="fas fa-user"></i>
+                  Last Name
+                </label>
+                <input
+                    type="text"
+                    name="{{ user_form.last_name.name }}"
+                    id="{{ user_form.last_name.id_for_label }}"
+                    class="form-control-custom"
+                    value="{{ user_form.last_name.value|default:user.last_name }}"
+                    required
+                >
+                {% if user_form.last_name.errors %}
+                  <ul class="errorlist">
+                    {% for error in user_form.last_name.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+          </div>
 
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button type="submit" class="btn-gradient" style="flex: 1;">
-                        <i class="fas fa-save"></i> Save All Changes
-                    </button>
-                    <a href="{% url 'accounts:profile' username=user.username %}" class="btn-outline-gradient"
-                       style="flex: 1; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-times"></i> Cancel
-                    </a>
-                </div>
-            </form>
-        </div>
+          <div class="form-group-custom">
+            <label for="{{ user_form.email.id_for_label }}" class="form-label-custom">
+              <i class="fas fa-envelope"></i>
+              Email
+            </label>
+            <input
+                type="email"
+                name="{{ user_form.email.name }}"
+                id="{{ user_form.email.id_for_label }}"
+                class="form-control-custom"
+                value="{{ user_form.email.value|default:user.email }}"
+                required
+            >
+            {% if user_form.email.errors %}
+              <ul class="errorlist">
+                {% for error in user_form.email.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          <div class="form-group-custom">
+            <label for="{{ user_form.phone.id_for_label }}" class="form-label-custom">
+              <i class="fas fa-phone"></i>
+              Phone Number
+            </label>
+            <input
+                type="tel"
+                name="{{ user_form.phone.name }}"
+                id="{{ user_form.phone.id_for_label }}"
+                class="form-control-custom"
+                value="{{ user_form.phone.value|default:user.phone }}"
+                required
+            >
+            {% if user_form.phone.errors %}
+              <ul class="errorlist">
+                {% for error in user_form.phone.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          {% if user_form.non_field_errors or profile_form.non_field_errors %}
+            <div class="alert-custom alert-danger">
+              {% for error in user_form.non_field_errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+              {% for error in profile_form.non_field_errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="form-buttons">
+            <button type="submit" class="btn-gradient form-button-primary">
+              <i class="fas fa-save"></i>
+              Save All Changes
+            </button>
+            <a href="{% url 'accounts:profile' username=user.username %}" class="btn-outline-gradient form-button-secondary">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
 
-<script>
-function previewAvatar(input) {
-    const preview = document.getElementById('avatar-preview');
-    const previewImg = document.getElementById('preview-avatar');
+  <script>
+      function previewAvatar(input) {
+          const preview = document.getElementById('avatar-preview');
+          const previewImg = document.getElementById('preview-avatar');
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
+          if (input.files && input.files[0]) {
+              const reader = new FileReader();
 
-        reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            preview.style.display = 'block';
-        }
+              reader.onload = function (e) {
+                  previewImg.src = e.target.result;
+                  preview.style.display = 'block';
+              }
 
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        preview.style.display = 'none';
-    }
-}
-</script>
+              reader.readAsDataURL(input.files[0]);
+          } else {
+              preview.style.display = 'none';
+          }
+      }
+  </script>
 {% endblock %}

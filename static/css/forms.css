@@ -1,0 +1,168 @@
+.form-preview-container {
+    display: none;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+    border: 2px solid var(--ig-border);
+}
+
+.avatar-preview-container {
+    display: none;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.avatar-preview-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--ig-primary);
+}
+
+.avatar-preview-label {
+    margin: 10px 0 0 0;
+    color: var(--ig-primary);
+    font-size: 0.9rem;
+}
+
+.current-avatar-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.current-avatar-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--ig-border);
+}
+
+.current-avatar-label {
+    margin: 10px 0 0 0;
+    color: var(--ig-text-secondary);
+    font-size: 0.9rem;
+}
+
+.form-help-text {
+    color: var(--ig-text-secondary);
+    font-size: 0.8rem;
+}
+
+.hashtag-preview-container {
+    margin-top: 10px;
+    display: none;
+}
+
+.hashtag-preview-title {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.hashtags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.hashtag-tag {
+    background-color: rgba(0, 149, 246, 0.1);
+    color: var(--ig-link);
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.form-button-primary {
+    flex: 1;
+}
+
+.form-button-secondary {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-section-divider {
+    margin: 30px 0;
+    border: none;
+    height: 1px;
+    background: var(--ig-border);
+}
+
+.form-section-title {
+    margin-bottom: 20px;
+    color: var(--ig-text-primary);
+}
+
+.delete-preview {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.delete-preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 12px;
+    border: 2px solid var(--ig-border);
+}
+
+.delete-preview-caption {
+    margin: 10px 0 0 0;
+    color: var(--ig-text-primary);
+    font-style: italic;
+}
+
+.delete-preview-date {
+    margin: 10px 0 0 0;
+    color: var(--ig-text-secondary);
+    font-size: 0.9rem;
+}
+
+.delete-warning {
+    margin-bottom: 20px;
+}
+
+.delete-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.delete-btn-confirm {
+    flex: 1;
+    background: linear-gradient(45deg, var(--ig-pink), #e91e63);
+    color: white;
+}
+
+.delete-btn-cancel {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
