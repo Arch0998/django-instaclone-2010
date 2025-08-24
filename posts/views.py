@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.db.models import Q
 
 from posts.models import Post, Comment, PostLike
 from accounts.models import User
