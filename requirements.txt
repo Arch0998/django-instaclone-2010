@@ -4,3 +4,4 @@ black==25.1.0
 pillow==11.3.0
 django-crispy-forms==2.4
 crispy-bootstrap4==2025.6
+cloudinary==1.44.1
