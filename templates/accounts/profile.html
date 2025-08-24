@@ -50,26 +50,6 @@
 
                     <div class="user-details">
                         <div class="user-detail">
-                            <strong><i class="fas fa-envelope"></i> Email:</strong>
-                            <span>{{ profile_user.email|default:"Not specified" }}</span>
-                        </div>
-                        <div class="user-detail">
-                            <strong><i class="fas fa-user"></i> First Name:</strong>
-                            <span>{{ profile_user.first_name|default:"Not specified" }}</span>
-                        </div>
-                        <div class="user-detail">
-                            <strong><i class="fas fa-user"></i> Last Name:</strong>
-                            <span>{{ profile_user.last_name|default:"Not specified" }}</span>
-                        </div>
-                        <div class="user-detail">
-                            <strong><i class="fas fa-phone"></i> Phone:</strong>
-                            <span>{{ profile_user.phone|default:"Not specified" }}</span>
-                        </div>
-                        <div class="user-detail">
-                            <strong><i class="fas fa-calendar-alt"></i> Joined:</strong>
-                            <span>{{ profile_user.date_joined|date:"F d, Y" }}</span>
-                        </div>
-                        <div class="user-detail">
                             <strong><i class="fas fa-images"></i> Posts:</strong>
                             <span>{{ posts_count }} post{{ posts_count|pluralize }}</span>
                         </div>
