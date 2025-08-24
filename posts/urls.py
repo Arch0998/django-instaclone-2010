@@ -44,4 +44,9 @@ urlpatterns = [
         views.SearchUsersView.as_view(),
         name="search_users"
     ),
+    path(
+        "hashtag/<str:hashtag>/",
+        views.HashtagPostsView.as_view(),
+        name="hashtag_posts"
+    ),
 ]

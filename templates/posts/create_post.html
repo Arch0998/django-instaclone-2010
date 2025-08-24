@@ -58,6 +58,7 @@
                         rows="4"
                         placeholder="Write a caption... #hashtags #photography #moment"
                         style="resize: vertical; min-height: 100px;"
+                        oninput="highlightHashtags(this)"
                     >{{ form.caption.value|default:'' }}</textarea>
                     {% if form.caption.errors %}
                         <ul class="errorlist">
@@ -69,6 +70,12 @@
                     <small style="color: var(--ig-text-secondary); font-size: 0.8rem;">
                         <i class="fas fa-hashtag"></i> Use hashtags to reach more people
                     </small>
+
+                    <!-- Hashtag Preview -->
+                    <div id="hashtag-preview" style="margin-top: 10px; display: none;">
+                        <p style="font-size: 0.9rem; margin-bottom: 5px;">Hashtags detected:</p>
+                        <div id="hashtags-container" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
+                    </div>
                 </div>
 
                 {% if form.non_field_errors %}
@@ -110,5 +117,42 @@ function previewImage(input) {
         preview.style.display = 'none';
     }
 }
+
+function highlightHashtags(textarea) {
+    const text = textarea.value;
+    const hashtags = text.match(/#\w+/g) || [];
+    const hashtagPreview = document.getElementById('hashtag-preview');
+    const hashtagsContainer = document.getElementById('hashtags-container');
+
+    if (hashtags.length > 0) {
+        hashtagPreview.style.display = 'block';
+        hashtagsContainer.innerHTML = '';
+
+        // Создаем уникальный список хештегов
+        const uniqueHashtags = [...new Set(hashtags)];
+
+        uniqueHashtags.forEach(hashtag => {
+            const tag = document.createElement('span');
+            tag.textContent = hashtag;
+            tag.style.backgroundColor = 'rgba(0, 149, 246, 0.1)';
+            tag.style.color = 'var(--ig-link)';
+            tag.style.padding = '3px 10px';
+            tag.style.borderRadius = '15px';
+            tag.style.fontSize = '0.9rem';
+
+            hashtagsContainer.appendChild(tag);
+        });
+    } else {
+        hashtagPreview.style.display = 'none';
+    }
+}
+
+// Вызываем функцию при загрузке страницы для обработки сохраненного текста
+document.addEventListener('DOMContentLoaded', function() {
+    const captionTextarea = document.getElementById('{{ form.caption.id_for_label }}');
+    if (captionTextarea.value) {
+        highlightHashtags(captionTextarea);
+    }
+});
 </script>
 {% endblock %}

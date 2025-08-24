@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+import re
 
 
 class Post(models.Model):
@@ -37,6 +38,25 @@ class Post(models.Model):
     def clean(self):
         if not self.image:
             raise ValidationError("Post must have an image")
+            
+    def save(self, *args, **kwargs):
+        # Сохраняем пост
+        super().save(*args, **kwargs)
+        
+        # Обрабатываем хештеги
+        if self.caption:
+            # Находим все хештеги в подписи
+            hashtag_pattern = r'#(\w+)'
+            hashtags = re.findall(hashtag_pattern, self.caption)
+            
+            # Очищаем старые связи с хештегами
+            self.hashtags.clear()
+            
+            # Создаем новые хештеги или получаем существующие и связываем их с постом
+            for tag_name in hashtags:
+                tag_name = tag_name.lower()  # Нормализуем хештеги в нижний регистр
+                hashtag, created = Hashtag.objects.get_or_create(name=tag_name)
+                self.hashtags.add(hashtag)
 
 
 class PostLike(models.Model):

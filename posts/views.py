@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from posts.models import Post, Comment, PostLike
+from posts.models import Post, Comment, PostLike, Hashtag
 from accounts.models import User
 
 
@@ -154,3 +154,18 @@ class SearchUsersView(LoginRequiredMixin, generic.View):
                 for user in users
             ]
         })
+
+
+class HashtagPostsView(LoginRequiredMixin, generic.ListView):
+    template_name = "posts/hashtag_posts.html"
+    context_object_name = "posts"
+    paginate_by = 12
+    
+    def get_queryset(self):
+        self.hashtag = get_object_or_404(Hashtag, name=self.kwargs["hashtag"])
+        return self.hashtag.posts.all().order_by("-created_at")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["hashtag"] = self.hashtag
+        return context

@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+
+{% block title %}#{{ hashtag.name }} - Instaclone 2010{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Hashtag Header -->
+    <div class="card-modern" style="margin-bottom: 30px;">
+        <div class="posts-header">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin: 0; color: var(--ig-text-primary);">
+                        <i class="fas fa-hashtag" style="color: var(--ig-link);"></i>
+                        <span style="color: var(--ig-link);">{{ hashtag.name }}</span>
+                    </h3>
+                    <p style="margin: 10px 0 0 0; color: var(--ig-text-secondary);">
+                        <i class="fas fa-images"></i>
+                        {{ posts.count }} post{{ posts.count|pluralize }} found
+                    </p>
+                </div>
+                <a href="{% url 'accounts:profile' username=user.username %}"
+                   class="btn-outline-gradient"
+                   style="font-size: 0.9rem; padding: 8px 16px;">
+                    <i class="fas fa-arrow-left"></i> Back to Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="posts-card">
+        <div class="posts-header">
+            <h5>
+                <i class="fas fa-images"></i>
+                Posts with #{{ hashtag.name }}
+                <span style="color: var(--ig-text-secondary); font-weight: normal;">({{ page_obj.paginator.count }})</span>
+            </h5>
+        </div>
+        <div class="posts-body">
+            {% if posts %}
+                <div class="row">
+                    {% for post in posts %}
+                        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                            <div class="card-modern post-card" style="transition: all 0.3s ease; cursor: pointer;"
+                                 onclick="window.location.href='{% url 'posts:detail' post.pk %}'">
+                                <!-- Post Image -->
+                                <div style="position: relative; overflow: hidden; border-radius: 12px 12px 0 0;">
+                                    <img src="{{ post.image.url }}"
+                                         alt="Post by {{ post.author.username }}"
+                                         style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s ease;">
+
+                                    <!-- Overlay on hover -->
+                                    <div class="post-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s ease; display: flex; align-items: center; justify-content: center; color: white;">
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 1.5rem; margin-bottom: 10px;">
+                                                <i class="fas fa-heart"></i> {{ post.likes.count }}
+                                                <span style="margin-left: 20px;">
+                                                    <i class="fas fa-comment"></i> {{ post.comments.count }}
+                                                </span>
+                                            </div>
+                                            <p style="margin: 0; font-size: 0.9rem;">Click to view details</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Post Info -->
+                                <div style="padding: 15px;">
+                                    <!-- Author info -->
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                        {% if post.author.profile.avatar %}
+                                            <img src="{{ post.author.profile.avatar.url }}"
+                                                 alt="{{ post.author.username }}"
+                                                 style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ig-border);">
+                                        {% else %}
+                                            <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--ig-border); display: flex; align-items: center; justify-content: center; color: var(--ig-text-secondary);">
+                                                <i class="fas fa-user fa-sm"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <a href="{% url 'accounts:profile' username=post.author.username %}"
+                                               style="text-decoration: none; color: var(--ig-text-primary); font-weight: 600; font-size: 0.9rem;">
+                                                {{ post.author.username }}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Post date -->
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <p style="margin: 0; color: var(--ig-text-secondary); font-size: 0.8rem;">
+                                            <i class="fas fa-clock"></i>
+                                            {{ post.created_at|date:"M d, Y \a\t H:i" }}
+                                        </p>
+                                        <!-- Quick stats -->
+                                        <div style="display: flex; gap: 15px; color: var(--ig-text-secondary); font-size: 0.8rem;">
+                                            <span><i class="fas fa-heart"></i> {{ post.likes.count }}</span>
+                                            <span><i class="fas fa-comment"></i> {{ post.comments.count }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Post caption (truncated) -->
+                                    {% if post.caption %}
+                                        <p style="margin: 0; color: var(--ig-text-primary); line-height: 1.4; font-size: 0.9rem;">
+                                            {{ post.caption|truncatewords:15 }}
+                                            {% if post.caption|wordcount > 15 %}
+                                                <a href="{% url 'posts:detail' post.pk %}"
+                                                   style="color: var(--ig-link); text-decoration: none;">
+                                                    ... more
+                                                </a>
+                                            {% endif %}
+                                        </p>
+                                    {% endif %}
+
+                                    <!-- Other hashtags in this post -->
+                                    {% if post.hashtags.all.count > 1 %}
+                                        <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
+                                            {% for tag in post.hashtags.all %}
+                                                {% if tag.name != hashtag.name %}
+                                                    <a href="{% url 'posts:hashtag_posts' hashtag=tag.name %}"
+                                                       style="text-decoration: none; color: var(--ig-link); background-color: rgba(0,149,246,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; transition: all 0.3s ease;">
+                                                        #{{ tag.name }}
+                                                    </a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                    <div style="margin-top: 40px; display: flex; justify-content: center;">
+                        <nav aria-label="Posts pagination">
+                            <ul class="pagination" style="display: flex; list-style: none; gap: 10px; margin: 0; padding: 0;">
+                                {% if page_obj.has_previous %}
+                                    <li>
+                                        <a href="?page=1"
+                                           style="padding: 10px 15px; border: 1px solid var(--ig-border); border-radius: 8px; text-decoration: none; color: var(--ig-text-primary); background: white; transition: all 0.3s ease;">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="?page={{ page_obj.previous_page_number }}"
+                                           style="padding: 10px 15px; border: 1px solid var(--ig-border); border-radius: 8px; text-decoration: none; color: var(--ig-text-primary); background: white; transition: all 0.3s ease;">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li>
+                                            <span style="padding: 10px 15px; border: 1px solid var(--ig-link); border-radius: 8px; background: var(--ig-link); color: white; font-weight: 600;">
+                                                {{ num }}
+                                            </span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li>
+                                            <a href="?page={{ num }}"
+                                               style="padding: 10px 15px; border: 1px solid var(--ig-border); border-radius: 8px; text-decoration: none; color: var(--ig-text-primary); background: white; transition: all 0.3s ease;">
+                                                {{ num }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li>
+                                        <a href="?page={{ page_obj.next_page_number }}"
+                                           style="padding: 10px 15px; border: 1px solid var(--ig-border); border-radius: 8px; text-decoration: none; color: var(--ig-text-primary); background: white; transition: all 0.3s ease;">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="?page={{ page_obj.paginator.num_pages }}"
+                                           style="padding: 10px 15px; border: 1px solid var(--ig-border); border-radius: 8px; text-decoration: none; color: var(--ig-text-primary); background: white; transition: all 0.3s ease;">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- Pagination info -->
+                    <div style="text-align: center; margin-top: 20px; color: var(--ig-text-secondary); font-size: 0.9rem;">
+                        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} posts
+                    </div>
+                {% endif %}
+
+            {% else %}
+                <!-- No posts found -->
+                <div style="text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 4rem; color: var(--ig-text-secondary); margin-bottom: 20px;">
+                        <i class="fas fa-hashtag"></i>
+                    </div>
+                    <h4 style="color: var(--ig-text-primary); margin-bottom: 15px;">
+                        No posts found with #{{ hashtag.name }}
+                    </h4>
+                    <p style="color: var(--ig-text-secondary); margin-bottom: 30px;">
+                        This hashtag doesn't have any posts yet. Be the first to use it!
+                    </p>
+                    <a href="{% url 'posts:create' %}" class="btn-gradient">
+                        <i class="fas fa-plus-circle"></i> Create Post with #{{ hashtag.name }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.post-card:hover .post-overlay {
+    opacity: 1;
+}
+
+.pagination a:hover,
+.pagination span:hover {
+    background: var(--ig-link) !important;
+    color: white !important;
+    border-color: var(--ig-link) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .post-card {
+        margin-bottom: 20px;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination li {
+        margin: 2px;
+    }
+}
+
+/* Ensure consistent card heights */
+.post-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-card > div:last-child {
+    flex: 1;
+}
+</style>
+
+<script>
+// Add click tracking for analytics (optional)
+document.querySelectorAll('.post-card').forEach(card => {
+    card.addEventListener('click', function() {
+        // Optional: Add analytics tracking here
+        console.log('Post clicked:', this.getAttribute('onclick'));
+    });
+});
+
+// Add smooth scroll to top after pagination
+document.querySelectorAll('.pagination a').forEach(link => {
+    link.addEventListener('click', function() {
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+    });
+});
+</script>
+{% endblock %}
