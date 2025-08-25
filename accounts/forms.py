@@ -83,9 +83,9 @@ class ProfileEditForm(forms.ModelForm):
             if avatar.size > 5 * 1024 * 1024:
                 raise ValidationError("Avatar file size should not exceed 5MB.")
 
-            allowed_extensions = [".jpg", ".jpeg"]
+            allowed_extensions = [".jpg", ".jpeg", ".png"]
             file_extension = avatar.name.lower().split('.')[-1]
             if f".{file_extension}" not in allowed_extensions:
-                raise ValidationError("Only JPG, and JPEG files are allowed.")
+                raise ValidationError("Only JPG, JPEG and PNG files are allowed.")
 
         return avatar
