@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, UpdateView, ListView
+from django.views.generic import CreateView, DetailView, ListView
 from django.shortcuts import redirect, get_object_or_404, render
 from django.http import JsonResponse
 from django.views import View
@@ -28,7 +28,6 @@ class UserRegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        # Create user profile
         UserProfile.objects.get_or_create(user=self.object)
 
         username = form.cleaned_data.get("username")
@@ -52,8 +51,7 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
         if self.request.user.is_authenticated:
             context["is_following"] = Follow.objects.filter(
-                follower=self.request.user,
-                following=self.object
+                follower=self.request.user, following=self.object
             ).exists()
         else:
             context["is_following"] = False
@@ -66,34 +64,56 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
 class ProfileEditView(LoginRequiredMixin, View):
     template_name = "accounts/edit_profile.html"
-    
+
     def get(self, request):
         user_form = UserEditForm(instance=request.user, user=request.user)
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         profile_form = ProfileEditForm(instance=profile)
-        
-        return render(request, self.template_name, {
-            "user_form": user_form,
-            "profile_form": profile_form,
-            "user": request.user,
-        })
-    
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "user_form": user_form,
+                "profile_form": profile_form,
+                "user": request.user,
+            },
+        )
+
     def post(self, request):
-        user_form = UserEditForm(request.POST, instance=request.user, user=request.user)
+        user_form = UserEditForm(
+            request.POST,
+            instance=request.user,
+            user=request.user
+        )
         profile, created = UserProfile.objects.get_or_create(user=request.user)
-        profile_form = ProfileEditForm(request.POST, request.FILES, instance=profile)
-        
+        profile_form = ProfileEditForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, "Profile updated successfully!")
-            return redirect("accounts:profile", username=request.user.username)
-        
-        return render(request, self.template_name, {
-            "user_form": user_form,
-            "profile_form": profile_form,
-            "user": request.user,
-        })
+            messages.success(
+                request,
+                "Profile updated successfully!"
+            )
+            return redirect(
+                "accounts:profile",
+                username=request.user.username
+            )
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "user_form": user_form,
+                "profile_form": profile_form,
+                "user": request.user,
+            },
+        )
 
 
 class FollowUserView(LoginRequiredMixin, View):
@@ -101,7 +121,9 @@ class FollowUserView(LoginRequiredMixin, View):
         user_to_follow = get_object_or_404(User, username=username)
 
         if user_to_follow == request.user:
-            return JsonResponse({"success": False, "error": "You cannot follow yourself"})
+            return JsonResponse(
+                {"success": False, "error": "You cannot follow yourself"}
+            )
 
         follow, created = Follow.objects.get_or_create(
             follower=request.user,
@@ -109,17 +131,18 @@ class FollowUserView(LoginRequiredMixin, View):
         )
 
         if not created:
-            # Unfollow
             follow.delete()
             is_following = False
         else:
             is_following = True
 
-        return JsonResponse({
-            "success": True,
-            "is_following": is_following,
-            "followers_count": user_to_follow.followers_set.count()
-        })
+        return JsonResponse(
+            {
+                "success": True,
+                "is_following": is_following,
+                "followers_count": user_to_follow.followers_set.count(),
+            }
+        )
 
 
 class FollowersListView(LoginRequiredMixin, ListView):
@@ -157,7 +180,10 @@ class FollowingListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        self.profile_user = get_object_or_404(User, username=self.kwargs["username"])
+        self.profile_user = get_object_or_404(
+            User,
+            username=self.kwargs["username"]
+        )
         return (Follow.objects.filter(follower=self.profile_user)
                 .select_related("following", "following__profile"))
 
@@ -177,22 +203,27 @@ class FollowingListView(LoginRequiredMixin, ListView):
         return context
 
 
-class SearchView(ListView):
+class SearchView(LoginRequiredMixin, ListView):
     template_name = "accounts/search.html"
     context_object_name = "users"
     paginate_by = 20
 
     def get_queryset(self):
-        query = self.request.GET.get('q', '').strip()
+        query = self.request.GET.get("q", "").strip()
         if query:
-            return User.objects.filter(
-                Q(username__icontains=query) |
-                Q(first_name__icontains=query) |
-                Q(last_name__icontains=query)
-            ).exclude(id=self.request.user.id if self.request.user.is_authenticated else None)
+            queryset = User.objects.filter(
+                Q(username__icontains=query)
+                | Q(first_name__icontains=query)
+                | Q(last_name__icontains=query)
+            )
+
+            if self.request.user.is_authenticated:
+                queryset = queryset.exclude(id=self.request.user.id)
+
+            return queryset
         return User.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["query"] = self.request.GET.get('q', '')
+        context["query"] = self.request.GET.get("q", "")
         return context

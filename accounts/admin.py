@@ -29,31 +29,13 @@ class UserAdmin(UserAdmin):
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = [
-        "follower",
-        "following"
-    ]
-    search_fields = [
-        "follower__username",
-        "following__username"
-    ]
-    list_filter = [
-        "follower",
-        "following"
-    ]
+    list_display = ["follower", "following"]
+    search_fields = ["follower__username", "following__username"]
+    list_filter = ["follower", "following"]
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [
-        "user",
-        "avatar",
-        "profile_header"
-    ]
-    search_fields = [
-        "user__username",
-        "profile_header"
-    ]
-    list_filter = [
-        "user__username",
-    ]
+    list_display = ["user", "avatar", "profile_header"]
+    search_fields = ["user__username", "profile_header"]
+    list_filter = ["user__username"]

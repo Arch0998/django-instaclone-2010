@@ -151,17 +151,17 @@ LOGIN_URL = "/"
 MEDIA_URL = "/media/"
 
 cloudinary.config(
-  cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME"),
-  api_key = os.environ.get("CLOUDINARY_API_KEY"),
-  api_secret = os.environ.get("CLOUDINARY_API_SECRET"),
-  secure = True
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True,
 )
 
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-        },
+    },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        },
+    },
 }

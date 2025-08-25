@@ -5,16 +5,8 @@ from accounts import views
 app_name = "accounts"
 
 urlpatterns = [
-    path(
-        "",
-        views.IndexView.as_view(),
-        name="index"
-    ),
-    path(
-        "logout/",
-        LogoutView.as_view(),
-        name="logout"
-    ),
+    path("", views.IndexView.as_view(), name="index"),
+    path("logout/", LogoutView.as_view(), name="logout"),
     path(
         "registration/",
         views.UserRegisterView.as_view(),
@@ -26,9 +18,7 @@ urlpatterns = [
         name="edit_profile"
     ),
     path(
-        "search/",
-        views.SearchView.as_view(),
-        name="search"
+        "search/", views.SearchView.as_view(), name="search"
     ),
     path(
         "user/<str:username>/",
