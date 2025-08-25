@@ -128,13 +128,26 @@ class FollowersListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        self.profile_user = get_object_or_404(User, username=self.kwargs["username"])
-        return Follow.objects.filter(following=self.profile_user).select_related('follower')
+        self.profile_user = get_object_or_404(
+            User,
+            username=self.kwargs["username"]
+        )
+        return (Follow.objects.filter(following=self.profile_user)
+                .select_related("follower", "follower__profile"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["profile_user"] = self.profile_user
         context["count"] = self.profile_user.followers_set.count()
+
+        if self.request.user.is_authenticated:
+            user_following = Follow.objects.filter(
+                follower=self.request.user
+            ).values_list("following_id", flat=True)
+            context["user_following"] = list(user_following)
+        else:
+            context["user_following"] = []
+
         return context
 
 
@@ -145,12 +158,22 @@ class FollowingListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         self.profile_user = get_object_or_404(User, username=self.kwargs["username"])
-        return Follow.objects.filter(follower=self.profile_user).select_related('following')
+        return (Follow.objects.filter(follower=self.profile_user)
+                .select_related("following", "following__profile"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["profile_user"] = self.profile_user
         context["count"] = self.profile_user.following_set.count()
+
+        if self.request.user.is_authenticated:
+            user_following = Follow.objects.filter(
+                follower=self.request.user
+            ).values_list("following_id", flat=True)
+            context["user_following"] = list(user_following)
+        else:
+            context["user_following"] = []
+
         return context
 
 
