@@ -18,19 +18,21 @@
             {% for follow in followers %}
               <div class="card mb-3">
                 <div class="card-body d-flex align-items-center">
-                  <div class="user-avatar mr-3">
+                  <div class="user-avatar me-4">
                     {% if follow.follower.profile.avatar %}
-                      <img src="{{ follow.follower.profile.avatar.url }}" alt="{{ follow.follower.username }}" class="rounded-circle" width="50">
+                      <img src="{{ follow.follower.profile.avatar.url }}" alt="{{ follow.follower.username }}" class="rounded-circle" width="50" height="50">
                     {% else %}
-                      <div class="default-avatar rounded-circle" style="width: 50px; height: 50px;"></div>
+                      <div class="default-avatar rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: #e9ecef;">
+                        <i class="fas fa-user text-muted"></i>
+                      </div>
                     {% endif %}
                   </div>
                   <div class="user-info flex-grow-1">
-                    <a href="{% url 'accounts:profile' username=follow.follower.username %}" class="user-link">
-                      <h5 class="card-title mb-0">{{ follow.follower.username }}</h5>
+                    <a href="{% url 'accounts:profile' username=follow.follower.username %}" class="user-link text-decoration-none">
+                      <h5 class="card-title mb-1">{{ follow.follower.username }}</h5>
                     </a>
                     {% if follow.follower.first_name or follow.follower.last_name %}
-                      <p class="card-text text-muted">{{ follow.follower.first_name }} {{ follow.follower.last_name }}</p>
+                      <p class="card-text text-muted mb-0">{{ follow.follower.first_name }} {{ follow.follower.last_name }}</p>
                     {% endif %}
                   </div>
                   {% if user != follow.follower %}
