@@ -39,7 +39,7 @@
                   {% if user != follow.following %}
                     {% if follow.following.id in user_following %}
                       <button class="btn btn-sm btn-outline-danger follow-btn" data-username="{{ follow.following.username }}" data-following="true">
-                        Unsubscribe
+                        Unfollow
                       </button>
                     {% else %}
                       <button class="btn btn-sm btn-primary follow-btn" data-username="{{ follow.following.username }}" data-following="false">
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     if (data.is_following) {
-                        btn.textContent = 'Unsubscribe';
+                        btn.textContent = 'Unfollow';
                         btn.className = 'btn btn-sm btn-outline-danger follow-btn';
                         btn.dataset.following = 'true';
                       } else {
