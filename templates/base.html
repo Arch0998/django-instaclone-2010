@@ -50,6 +50,12 @@
         <ul class="navbar-nav-custom ms-auto">
           {% if user.is_authenticated %}
             <li>
+              <a class="nav-link-custom" href="{% url 'posts:feed' %}">
+                <i class="fas fa-home"></i>
+                Feed
+              </a>
+            </li>
+            <li>
               <a class="nav-link-custom" href="{% url 'accounts:profile' username=user.username %}">
                 <i class="fas fa-user"></i>
                 My Profile

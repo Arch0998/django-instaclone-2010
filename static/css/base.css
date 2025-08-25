@@ -108,3 +108,66 @@
 .footer-heart {
     color: var(--ig-pink);
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    gap: 8px;
+}
+
+.page-item {
+    margin: 0;
+}
+
+.page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--ig-card-bg);
+    border: 1px solid var(--ig-border);
+    border-radius: 8px;
+    color: var(--ig-text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover {
+    background: var(--ig-hover-bg);
+    color: var(--ig-text-primary);
+    text-decoration: none;
+    border-color: var(--ig-link);
+}
+
+.page-item.active .page-link {
+    background: var(--ig-link);
+    color: white;
+    border-color: var(--ig-link);
+}
+
+.page-link.current {
+    cursor: default;
+}
+
+.page-link i {
+    font-size: 14px;
+}
+
+/* Responsive Pagination */
+@media (max-width: 480px) {
+    .pagination {
+        gap: 4px;
+    }
+
+    .page-link {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}

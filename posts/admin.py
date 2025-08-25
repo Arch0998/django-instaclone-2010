@@ -19,7 +19,23 @@ class PostAdmin(admin.ModelAdmin):
         "created_at",
         "author"
     ]
-    readonly_fields = ["created_at", "updated_at"]
+    fields = [
+        "author",
+        "image",
+        "caption",
+        "created_at",
+        "updated_at"
+    ]
+    readonly_fields = ["updated_at"]
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if "created_at" in form.base_fields:
+            form.base_fields["created_at"].widget.attrs.update({
+                "class": "vDateTimeField",
+                "placeholder": "YYYY-MM-DD HH:MM:SS"
+            })
+        return form
 
     def caption_short(self, obj):
         return obj.caption[:50] + "..." if len(obj.caption) > 50 else obj.caption

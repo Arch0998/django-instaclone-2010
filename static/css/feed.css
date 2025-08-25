@@ -1,0 +1,270 @@
+.feed-container {
+    max-width: 470px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.feed-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.feed-header h2 {
+    color: var(--ig-text-primary);
+    font-weight: 600;
+    margin: 0;
+}
+
+.feed-header i {
+    margin-right: 10px;
+    color: var(--ig-link);
+}
+
+.post-card {
+    background: var(--ig-card-bg);
+    border: 1px solid var(--ig-border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--ig-border);
+}
+
+.author-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ig-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ig-text-secondary);
+}
+
+.author-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.author-username {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ig-text-primary);
+    text-decoration: none;
+}
+
+.author-username:hover {
+    text-decoration: none;
+    color: var(--ig-text-primary);
+}
+
+.post-date {
+    font-size: 12px;
+    color: var(--ig-text-secondary);
+    margin: 0;
+}
+
+.post-actions .btn-link {
+    color: var(--ig-text-secondary);
+    font-size: 16px;
+    padding: 8px;
+}
+
+/* Post Image */
+.post-image-container {
+    width: 100%;
+    max-height: 585px;
+    overflow: hidden;
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.post-actions-bar {
+    padding: 16px 16px 8px 16px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.action-buttons button,
+.action-buttons a {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--ig-text-primary);
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+}
+
+.action-buttons button:hover,
+.action-buttons a:hover {
+    color: var(--ig-text-secondary);
+}
+
+.like-btn.liked {
+    color: #ed4956 !important;
+}
+
+.like-btn.liked:hover {
+    color: #ed4956 !important;
+}
+
+/* Post Stats */
+.post-stats {
+    padding: 0 16px 8px 16px;
+}
+
+.likes-count {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ig-text-primary);
+    margin: 0;
+}
+
+.post-caption {
+    padding: 0 16px 8px 16px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.caption-text {
+    color: var(--ig-text-primary);
+}
+
+.post-hashtags {
+    padding: 0 16px 8px 16px;
+}
+
+.hashtag-link {
+    color: var(--ig-link);
+    text-decoration: none;
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.hashtag-link:hover {
+    text-decoration: underline;
+    color: var(--ig-link);
+}
+
+.comments-preview {
+    padding: 0 16px 16px 16px;
+}
+
+.view-all-comments {
+    color: var(--ig-text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.view-all-comments:hover {
+    color: var(--ig-text-secondary);
+    text-decoration: none;
+}
+
+.comment {
+    font-size: 14px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--ig-text-primary);
+    text-decoration: none;
+    margin-right: 8px;
+}
+
+.comment-author:hover {
+    text-decoration: none;
+    color: var(--ig-text-primary);
+}
+
+.comment-text {
+    color: var(--ig-text-primary);
+}
+
+.empty-feed {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-content i {
+    color: var(--ig-text-secondary);
+    margin-bottom: 20px;
+}
+
+.empty-content h3 {
+    color: var(--ig-text-primary);
+    margin-bottom: 12px;
+}
+
+.empty-content p {
+    color: var(--ig-text-secondary);
+    margin-bottom: 24px;
+}
+
+.btn-primary {
+    background: var(--ig-link);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background: var(--ig-link-hover);
+    color: white;
+    text-decoration: none;
+}
+
+.pagination-container {
+    margin-top: 40px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .feed-container {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .post-card {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Feed - Instaclone 2010{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="feed-container">
+  <div class="feed-header">
+    <h2>
+      <i class="fas fa-home"></i>
+      Your Feed
+    </h2>
+  </div>
+
+  {% if posts %}
+    <div class="posts-list">
+      {% for post in posts %}
+        <article class="post-card">
+          <div class="post-header">
+            <div class="author-info">
+              {% if post.author.profile.avatar %}
+                <img src="{{ post.author.profile.avatar.url }}"
+                     alt="{{ post.author.username }}"
+                     class="author-avatar">
+              {% else %}
+                <div class="author-avatar-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              {% endif %}
+
+              <div class="author-details">
+                <a href="{% url 'accounts:profile' username=post.author.username %}"
+                   class="author-username">{{ post.author.username }}</a>
+                <p class="post-date">{{ post.created_at|timesince }} ago</p>
+              </div>
+            </div>
+
+            {% if post.author == user %}
+              <div class="post-actions">
+                <a href="{% url 'posts:detail' post.pk %}" class="btn-link">
+                  <i class="fas fa-ellipsis-h"></i>
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="post-image-container">
+            <img src="{{ post.image.url }}"
+                 alt="Post by {{ post.author.username }}"
+                 class="post-image">
+          </div>
+
+          <div class="post-actions-bar">
+            <div class="action-buttons">
+              <button class="like-btn {% if post.id in user_likes %}liked{% endif %}"
+                      data-post-id="{{ post.id }}">
+                <i class="{% if post.id in user_likes %}fas{% else %}far{% endif %} fa-heart"></i>
+              </button>
+
+              <a href="{% url 'posts:detail' post.pk %}" class="comment-btn">
+                <i class="far fa-comment"></i>
+              </a>
+
+              <button class="share-btn">
+                <i class="far fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="post-stats">
+            <p class="likes-count">
+              <span class="count">{{ post.likes.count }}</span>
+              like{{ post.likes.count|pluralize }}
+            </p>
+          </div>
+
+          {% if post.caption %}
+            <div class="post-caption">
+              <a href="{% url 'accounts:profile' username=post.author.username %}"
+                 class="author-username">{{ post.author.username }}</a>
+              <span class="caption-text">{{ post.caption }}</span>
+            </div>
+          {% endif %}
+
+          {% if post.hashtags.exists %}
+            <div class="post-hashtags">
+              {% for hashtag in post.hashtags.all %}
+                <a href="{% url 'posts:hashtag_posts' hashtag=hashtag.name %}"
+                   class="hashtag-link">#{{ hashtag.name }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if post.comments.exists %}
+            <div class="comments-preview">
+              {% if post.comments.count > 2 %}
+                <a href="{% url 'posts:detail' post.pk %}" class="view-all-comments">
+                  View all {{ post.comments.count }} comments
+                </a>
+              {% endif %}
+
+              {% for comment in post.comments.all|slice:":2" %}
+                <div class="comment">
+                  <a href="{% url 'accounts:profile' username=comment.author.username %}"
+                     class="comment-author">{{ comment.author.username }}</a>
+                  <span class="comment-text">{{ comment.content }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+      <div class="pagination-container">
+        {% include "pagination.html" %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="empty-feed">
+      <div class="empty-content">
+        <i class="fas fa-users fa-3x"></i>
+        <h3>Your feed is empty</h3>
+        <p>Follow some users to see their posts in your feed!</p>
+        <a href="{% url 'accounts:search' %}" class="btn-primary">
+          <i class="fas fa-search"></i>
+          Find people to follow
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const icon = this.querySelector('i');
+            const countElement = this.closest('.post-card').querySelector('.likes-count .count');
+
+            fetch(`/posts/${postId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.is_liked) {
+                        icon.className = 'fas fa-heart';
+                        this.classList.add('liked');
+                    } else {
+                        icon.className = 'far fa-heart';
+                        this.classList.remove('liked');
+                    }
+                    countElement.textContent = data.likes_count;
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

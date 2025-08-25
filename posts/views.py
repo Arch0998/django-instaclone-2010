@@ -4,9 +4,11 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Prefetch
 
 from posts.models import Post, Comment, PostLike, Hashtag
-from accounts.models import User
+from accounts.models import User, Follow
 
 
 class PostCreateView(LoginRequiredMixin, generic.CreateView):
@@ -154,6 +156,49 @@ class SearchUsersView(LoginRequiredMixin, generic.View):
                 for user in users
             ]
         })
+
+
+class FeedView(LoginRequiredMixin, generic.ListView):
+    model = Post
+    template_name = "posts/feed.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        following_users = Follow.objects.filter(
+            follower=self.request.user
+        ).values_list("following", flat=True)
+
+        return Post.objects.filter(
+            author__in=following_users
+        ).select_related(
+            "author",
+            "author__profile"
+        ).prefetch_related(
+            "likes",
+            "hashtags",
+            Prefetch(
+                "comments",
+                queryset=Comment.objects.select_related(
+                    "author",
+                    "author__profile"
+                ).order_by("-created_at")
+            )
+        ).order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated and context["posts"]:
+            user_likes = PostLike.objects.filter(
+                user=self.request.user,
+                post__in=context["posts"]
+            ).values_list("post_id", flat=True)
+            context["user_likes"] = list(user_likes)
+        else:
+            context["user_likes"] = []
+
+        return context
 
 
 class HashtagPostsView(LoginRequiredMixin, generic.ListView):
