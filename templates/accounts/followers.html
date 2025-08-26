@@ -2,6 +2,11 @@
 
 {% block title %}Followers {{ profile_user.username }}{% endblock %}
 
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/follow_buttons.js' %}?v=1"></script>
+{% endblock %}
+
 {% block content %}
 {% csrf_token %}
   <div class="container mt-4">
@@ -61,9 +66,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block extra_js %}
-  {% load static %}
-  <script src="{% static 'js/follow_buttons.js' %}?v=1"></script>
 {% endblock %}

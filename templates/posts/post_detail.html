@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="{% static 'css/post_detail.css' %}?v=5">
 {% endblock %}
 
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/post_detail.js' %}?v=1"></script>
+{% endblock %}
+
 {% block content %}
   <div class="profile-container">
     <div class="card-modern">
@@ -198,9 +203,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block extra_js %}
-  {% load static %}
-  <script src="{% static 'js/post_detail.js' %}?v=1"></script>
 {% endblock %}

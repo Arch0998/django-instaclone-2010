@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="{% static 'css/hashtag_posts.css' %}">
 {% endblock %}
 
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/hashtag_posts.js' %}?v=1"></script>
+{% endblock %}
+
 {% block content %}
   <div class="profile-container">
 
@@ -196,9 +201,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block extra_js %}
-  {% load static %}
-  <script src="{% static 'js/hashtag_posts.js' %}?v=1"></script>
 {% endblock %}

@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="{% static 'css/feed.css' %}">
 {% endblock %}
 
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/like_button.js' %}?v=1"></script>
+{% endblock %}
+
 {% block content %}
 {% csrf_token %}
 <div class="feed-container">
@@ -130,10 +135,4 @@
     </div>
   {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_js %}
-  {% load static %}
-  <script src="{% static 'js/like_button.js' %}?v=1"></script>
-
 {% endblock %}
