@@ -50,11 +50,25 @@
           </div>
 
           <div class="post-image-container">
-            <a href="{% url 'posts:detail' post.pk %}">
+            <a href="{% url 'posts:detail' post.pk %}" class="feed-post-link">
               <img src="{{ post.image.url }}"
                    alt="Post by {{ post.author.username }}"
                    class="post-image">
             </a>
+
+            <div class="post-overlay">
+              <div class="overlay-content">
+                <div class="overlay-stats">
+                  <i class="fas fa-heart"></i> {{ post.likes.count }}
+                  <span class="comment-count">
+                    <i class="fas fa-comment"></i> {{ post.comments.count }}
+                  </span>
+                </div>
+                <p class="overlay-text">
+                  Click to view details
+                </p>
+              </div>
+            </div>
           </div>
 
           <div class="post-actions-bar">
@@ -62,23 +76,18 @@
               <button class="like-btn {% if post.id in user_likes %}liked{% endif %}"
                       data-post-id="{{ post.id }}">
                 <i class="{% if post.id in user_likes %}fas{% else %}far{% endif %} fa-heart"></i>
+                {% if post.likes.count > 0 %}
+                  <span class="count-badge">{{ post.likes.count }}</span>
+                {% endif %}
               </button>
 
               <a href="{% url 'posts:detail' post.pk %}" class="comment-btn">
                 <i class="far fa-comment"></i>
+                {% if post.comments.count > 0 %}
+                  <span class="count-badge">{{ post.comments.count }}</span>
+                {% endif %}
               </a>
-
-              <button class="share-btn">
-                <i class="far fa-paper-plane"></i>
-              </button>
             </div>
-          </div>
-
-          <div class="post-stats">
-            <p class="likes-count">
-              <span class="count">{{ post.likes.count }}</span>
-              like{{ post.likes.count|pluralize }}
-            </p>
           </div>
 
           {% if post.caption %}
@@ -94,24 +103,6 @@
               {% for hashtag in post.hashtags.all %}
                 <a href="{% url 'posts:hashtag_posts' hashtag=hashtag.name %}"
                    class="hashtag-link">#{{ hashtag.name }}</a>
-              {% endfor %}
-            </div>
-          {% endif %}
-
-          {% if post.comments.exists %}
-            <div class="comments-preview">
-              {% if post.comments.count > 2 %}
-                <a href="{% url 'posts:detail' post.pk %}" class="view-all-comments">
-                  View all {{ post.comments.count }} comments
-                </a>
-              {% endif %}
-
-              {% for comment in post.comments.all|slice:":2" %}
-                <div class="comment">
-                  <a href="{% url 'accounts:profile' username=comment.author.username %}"
-                     class="comment-author">{{ comment.author.username }}</a>
-                  <span class="comment-text">{{ comment.content }}</span>
-                </div>
               {% endfor %}
             </div>
           {% endif %}
@@ -148,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const postId = this.dataset.postId;
             const icon = this.querySelector('i');
-            const countElement = this.closest('.post-card').querySelector('.likes-count .count');
 
             fetch(`/posts/${postId}/like/`, {
                 method: 'POST',
@@ -163,11 +153,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.is_liked) {
                         icon.className = 'fas fa-heart';
                         this.classList.add('liked');
-                    } else {
+                      } else {
                         icon.className = 'far fa-heart';
                         this.classList.remove('liked');
-                    }
-                    countElement.textContent = data.likes_count;
+                      }
                 }
             });
         });
