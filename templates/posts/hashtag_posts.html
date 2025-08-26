@@ -101,30 +101,6 @@
                         <span><i class="fas fa-comment"></i> {{ post.comments.count }}</span>
                       </div>
                     </div>
-
-                    {% if post.caption %}
-                      <p class="post-caption">
-                        {{ post.caption|truncatewords:15 }}
-                        {% if post.caption|wordcount > 15 %}
-                          <a href="{% url 'posts:detail' post.pk %}" class="more-link">
-                            ... more
-                          </a>
-                        {% endif %}
-                      </p>
-                    {% endif %}
-
-                    {% if post.hashtags.all.count > 1 %}
-                      <div class="other-hashtags">
-                        {% for tag in post.hashtags.all %}
-                          {% if tag.name != hashtag.name %}
-                            <a href="{% url 'posts:hashtag_posts' hashtag=tag.name %}"
-                               class="hashtag-tag">
-                              #{{ tag.name }}
-                            </a>
-                          {% endif %}
-                        {% endfor %}
-                      </div>
-                    {% endif %}
                   </div>
                 </div>
               </div>

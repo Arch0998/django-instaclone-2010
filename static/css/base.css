@@ -1,4 +1,5 @@
 html {
+    padding: 10px;
     zoom: 0.8
 }
 
@@ -163,7 +164,6 @@ html {
     font-size: 14px;
 }
 
-/* Responsive Pagination */
 @media (max-width: 480px) {
     .pagination {
         gap: 4px;
