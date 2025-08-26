@@ -142,36 +142,6 @@
                     </div>
                   </div>
 
-                  <div class="profile-post-info">
-                    <div class="profile-post-meta">
-                      <p class="profile-post-date">
-                        <i class="fas fa-clock"></i>
-                        {{ post.created_at|date:"M d, Y" }}
-                      </p>
-                      {% if user == post.author %}
-                        <div class="dropdown">
-                          <button class="profile-post-options" data-bs-toggle="dropdown">
-                            <i class="fas fa-ellipsis-h"></i>
-                          </button>
-                          <ul class="dropdown-menu">
-                            <li>
-                              <a class="dropdown-item" href="{% url 'posts:edit' post.pk %}"><i class="fas fa-edit"></i>
-                                Edit</a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item text-danger" href="{% url 'posts:delete' post.pk %}"><i class="fas fa-trash"></i>
-                                Delete</a>
-                            </li>
-                          </ul>
-                        </div>
-                      {% endif %}
-                    </div>
-                    {% if post.caption %}
-                      <p class="profile-post-caption">
-                        {{ post.caption|truncatewords:10 }}
-                      </p>
-                    {% endif %}
-                  </div>
                 </div>
               </div>
             {% endfor %}
