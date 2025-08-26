@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,7 @@
 
     {% block extra_css %}{% endblock %}
   </head>
-  <body>
+  <body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
       <div class="container">
         <a class="navbar-brand-custom gradient-text" href="
@@ -96,7 +96,7 @@
       </div>
     </nav>
 
-    <main>
+    <main class="flex-shrink-0">
       <div class="container">
         {% if messages %}
           <div class="messages-container">
@@ -115,11 +115,11 @@
       </div>
     </main>
 
-    <footer class="footer-custom">
+    <footer class="footer-custom mt-auto">
       <div class="container">
         <p class="footer-text">
           <i class="fab fa-instagram"></i>
-          © 2025 Instaclone 2010 | Made with <i class="fas fa-heart footer-heart"></i>
+           2025 Instaclone 2010  Made with <i class="fas fa-heart footer-heart"></i>
         </p>
       </div>
     </footer>
