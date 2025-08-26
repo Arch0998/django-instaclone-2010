@@ -20,8 +20,7 @@
         <a class="navbar-brand-custom gradient-text" href="
             {% if user.is_authenticated %}{% url 'accounts:profile' username=user.username %}{% else %}{% url 'accounts:index' %}{% endif %}">
           <i class="fab fa-instagram"></i>
-          Instaclone
-          2010
+          Instaclone 2010
         </a>
 
         {% if user.is_authenticated %}
