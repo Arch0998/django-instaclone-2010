@@ -62,31 +62,29 @@
           <button id="like-btn" onclick="toggleLike({{ post.pk }})"
                   class="action-btn like-btn {% if is_liked %}liked{% endif %}">
             <i class="{% if is_liked %}fas{% else %}far{% endif %} fa-heart"></i>
+            {% if post.likes.count > 0 %}
+              <span class="count-badge">{{ post.likes.count }}</span>
+            {% endif %}
           </button>
         {% else %}
           <button class="action-btn">
             <i class="far fa-heart"></i>
+            {% if post.likes.count > 0 %}
+              <span class="count-badge">{{ post.likes.count }}</span>
+            {% endif %}
           </button>
         {% endif %}
         <button class="action-btn" onclick="document.querySelector('textarea[name=content]').focus()">
           <i class="far fa-comment"></i>
+          {% if comments.count > 0 %}
+            <span class="count-badge">{{ comments.count }}</span>
+          {% endif %}
         </button>
         <div class="actions-right">
         </div>
       </div>
 
       <div class="post-info-section">
-        <p id="likes-count" class="likes-count">
-          {% if post.likes.count > 0 %}
-            <i class="fas fa-heart likes-icon"></i>
-            <span>{{ post.likes.count }}</span>
-            like
-            {{ post.likes.count|pluralize }}
-          {% else %}
-            <span class="likes-empty">Be the first to like this post</span>
-          {% endif %}
-        </p>
-
         {% if post.caption %}
           <p class="post-caption-container" id="post-caption">
             {{ post.caption|linebreaks }}
@@ -104,11 +102,6 @@
           </div>
         {% endif %}
 
-        {% if comments.count > 0 %}
-          <p class="comments-summary">
-            View all {{ comments.count }} comment{{ comments.count|pluralize }}
-          </p>
-        {% endif %}
       </div>
     </div>
 
@@ -211,6 +204,7 @@
           const btn = document.getElementById('like-btn');
           const icon = btn.querySelector('i');
           const likesCount = document.getElementById('likes-count');
+          const countBadge = btn.querySelector('.count-badge');
 
           try {
               const response = await fetch(`/posts/${postId}/like/`, {
@@ -225,17 +219,29 @@
 
               if (data.success) {
                   if (data.is_liked) {
-                      btn.style.color = 'var(--ig-pink)';
+                      btn.classList.add('liked');
                       icon.className = 'fas fa-heart';
                   } else {
-                      btn.style.color = 'var(--ig-text-primary)';
+                      btn.classList.remove('liked');
                       icon.className = 'far fa-heart';
                   }
 
                   if (data.likes_count > 0) {
-                      likesCount.innerHTML = `<i class="fas fa-heart" style="color: var(--ig-pink);"></i> <span>${data.likes_count}</span> like${data.likes_count !== 1 ? 's' : ''}`;
+                      likesCount.innerHTML = `<i class="fas fa-heart likes-icon"></i> <span>${data.likes_count}</span> like${data.likes_count !== 1 ? 's' : ''}`;
+
+                      if (countBadge) {
+                          countBadge.textContent = data.likes_count;
+                      } else {
+                          const newCountBadge = document.createElement('span');
+                          newCountBadge.className = 'count-badge';
+                          newCountBadge.textContent = data.likes_count;
+                          btn.appendChild(newCountBadge);
+                      }
                   } else {
-                      likesCount.innerHTML = '<span style="color: var(--ig-text-secondary);">Be the first to like this post</span>';
+                      likesCount.innerHTML = '<span class="likes-empty">Be the first to like this post</span>';
+                      if (countBadge) {
+                          countBadge.remove();
+                      }
                   }
               }
           } catch (error) {
