@@ -4,7 +4,7 @@
 {% block title %}{{ profile_user.username }} - Instaclone 2010{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}?v=4">
 {% endblock %}
 
 {% block content %}
@@ -120,11 +120,28 @@
             {% for post in posts %}
               <div class="col-md-4 mb-4">
                 <div class="card-modern">
-                  <a href="{% url 'posts:detail' post.pk %}" class="profile-post-link">
-                    <img src="{{ post.image.url }}"
-                         alt="Post by {{ post.author.username }}"
-                         class="profile-post-image">
-                  </a>
+                  <div class="profile-post-container">
+                    <a href="{% url 'posts:detail' post.pk %}" class="profile-post-link">
+                      <img src="{{ post.image.url }}"
+                           alt="Post by {{ post.author.username }}"
+                           class="profile-post-image">
+                    </a>
+
+                    <div class="post-overlay">
+                      <div class="overlay-content">
+                        <div class="overlay-stats">
+                          <i class="fas fa-heart"></i> {{ post.likes.count }}
+                          <span class="comment-count">
+                            <i class="fas fa-comment"></i> {{ post.comments.count }}
+                          </span>
+                        </div>
+                        <p class="overlay-text">
+                          Click to view details
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="profile-post-info">
                     <div class="profile-post-meta">
                       <p class="profile-post-date">
