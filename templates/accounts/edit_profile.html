@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
+{% block extra_js %}
+  <script src="{% static 'js/edit_profile.js' %}?v=1"></script>
+{% endblock %}
+
 {% block content %}
   <div class="auth-container">
     <div class="auth-card" style="max-width: 600px;">
@@ -223,24 +227,4 @@
       </div>
     </div>
   </div>
-
-  <script>
-      function previewAvatar(input) {
-          const preview = document.getElementById('avatar-preview');
-          const previewImg = document.getElementById('preview-avatar');
-
-          if (input.files && input.files[0]) {
-              const reader = new FileReader();
-
-              reader.onload = function (e) {
-                  previewImg.src = e.target.result;
-                  preview.style.display = 'block';
-              }
-
-              reader.readAsDataURL(input.files[0]);
-          } else {
-              preview.style.display = 'none';
-          }
-      }
-  </script>
 {% endblock %}

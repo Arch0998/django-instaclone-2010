@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
+{% block extra_js %}
+  <script src="{% static 'js/hashtag_highlighter.js' %}?v=1"></script>
+  <script src="{% static 'js/post_creation.js' %}?v=1"></script>
+{% endblock %}
+
 {% block content %}
   <div class="auth-container">
     <div class="auth-card" style="max-width: 600px;">
@@ -110,54 +115,4 @@
       </div>
     </div>
   </div>
-
-  <script>
-      function previewImage(input) {
-          const preview = document.getElementById('image-preview');
-          const previewImg = document.getElementById('preview-img');
-
-          if (input.files && input.files[0]) {
-              const reader = new FileReader();
-
-              reader.onload = function (e) {
-                  previewImg.src = e.target.result;
-                  preview.style.display = 'block';
-              }
-
-              reader.readAsDataURL(input.files[0]);
-          } else {
-              preview.style.display = 'none';
-          }
-      }
-
-      function highlightHashtags(textarea) {
-          const text = textarea.value;
-          const hashtags = text.match(/#\w+/g) || [];
-          const hashtagPreview = document.getElementById('hashtag-preview');
-          const hashtagsContainer = document.getElementById('hashtags-container');
-
-          if (hashtags.length > 0) {
-              hashtagPreview.style.display = 'block';
-              hashtagsContainer.innerHTML = '';
-
-              const uniqueHashtags = [...new Set(hashtags)];
-
-              uniqueHashtags.forEach(hashtag => {
-                  const tag = document.createElement('span');
-                  tag.textContent = hashtag;
-                  tag.className = 'hashtag-tag';
-                  hashtagsContainer.appendChild(tag);
-              });
-          } else {
-              hashtagPreview.style.display = 'none';
-          }
-      }
-
-      document.addEventListener('DOMContentLoaded', function () {
-          const captionTextarea = document.getElementById('{{ form.caption.id_for_label }}');
-          if (captionTextarea.value) {
-              highlightHashtags(captionTextarea);
-          }
-      });
-  </script>
 {% endblock %}

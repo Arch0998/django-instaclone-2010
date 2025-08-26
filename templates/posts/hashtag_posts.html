@@ -196,23 +196,9 @@
       </div>
     </div>
   </div>
+{% endblock %}
 
-  <script>
-      document.querySelectorAll('.post-card').forEach(card => {
-          card.addEventListener('click', function () {
-              console.log('Post clicked:', this.getAttribute('onclick'));
-          });
-      });
-
-      document.querySelectorAll('.pagination-link').forEach(link => {
-          link.addEventListener('click', function () {
-              setTimeout(() => {
-                  window.scrollTo({
-                      top: 0,
-                      behavior: 'smooth'
-                  });
-              }, 100);
-          });
-      });
-  </script>
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/hashtag_posts.js' %}?v=1"></script>
 {% endblock %}

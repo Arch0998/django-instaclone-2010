@@ -133,34 +133,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.like-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const postId = this.dataset.postId;
-            const icon = this.querySelector('i');
+  {% load static %}
+  <script src="{% static 'js/like_button.js' %}?v=1"></script>
 
-            fetch(`/posts/${postId}/like/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.is_liked) {
-                        icon.className = 'fas fa-heart';
-                        this.classList.add('liked');
-                      } else {
-                        icon.className = 'far fa-heart';
-                        this.classList.remove('liked');
-                      }
-                }
-            });
-        });
-    });
-});
-</script>
 {% endblock %}
