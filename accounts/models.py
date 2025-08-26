@@ -22,7 +22,7 @@ class User(AbstractUser):
         max_length=18,
         unique=True,
         error_messages={
-            "unique": _("A Phone number already exists."),
+            "unique": _("This phone number has already been registered."),
         },
     )
 

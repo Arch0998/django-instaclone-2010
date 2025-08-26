@@ -76,7 +76,7 @@ class Comment(models.Model):
 
     def clean(self):
         if not self.content:
-            raise ValidationError("Comment must have a content.")
+            raise ValidationError("Comment must have content.")
 
 
 class Hashtag(models.Model):
