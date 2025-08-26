@@ -63,6 +63,7 @@ class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Post
+    template_name = "posts/post_confirm_delete.html"
 
     def get_object(self):
         obj = super().get_object()
@@ -77,7 +78,8 @@ class PostDeleteView(LoginRequiredMixin, generic.DeleteView):
     def get_success_url(self):
         messages.success(self.request, "Post deleted successfully!")
         return reverse_lazy(
-            "accounts:profile", kwargs={"username": self.request.user.username}
+            "accounts:profile",
+            kwargs={"username": self.request.user.username}
         )
 
 

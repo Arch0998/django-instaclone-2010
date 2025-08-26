@@ -19,7 +19,10 @@ class PostAdmin(admin.ModelAdmin):
         return form
 
     def caption_short(self, obj):
-        return obj.caption[:50] + "..." if len(obj.caption) > 50 else obj.caption
+        if obj.caption:
+            return (obj.caption[:50] + "..."
+                   if len(obj.caption) > 50 else obj.caption)
+        return "No caption"
 
     caption_short.short_description = "Caption"
 

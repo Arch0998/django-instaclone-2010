@@ -9,6 +9,8 @@
     max-height: 300px;
     border-radius: 12px;
     border: 2px solid var(--ig-border);
+    display: block;
+    margin: 0 auto;
 }
 
 .avatar-preview-container {
@@ -165,4 +167,74 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.current-image-preview {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    border: 1px solid var(--ig-border);
+}
+
+.current-image-preview .form-preview-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 12px;
+    border: 2px solid var(--ig-border);
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.current-image-label {
+    display: none;
+}
+
+.delete-confirmation {
+    text-align: center;
+}
+
+.post-preview {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.caption-preview {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.post-meta {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.warning-message {
+    margin: 20px 0;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2837);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+.text-danger {
+    color: #ff4757 !important;
 }

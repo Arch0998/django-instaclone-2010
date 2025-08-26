@@ -43,7 +43,7 @@
                   Edit</a>
               </li>
               <li>
-                <a class="dropdown-item text-danger" href="{% url 'posts:delete' post.pk %}" onclick="return confirm('Are you sure you want to delete this post?')"><i class="fas fa-trash"></i>
+                <a class="dropdown-item text-danger" href="{% url 'posts:delete' post.pk %}"><i class="fas fa-trash"></i>
                   Delete</a>
               </li>
             </ul>
@@ -112,9 +112,7 @@
 
         {% if comments.count > 0 %}
           <p class="comments-summary">
-            View
-            all {{ comments.count }}
-            comment{{ comments.count|pluralize }}
+            View all {{ comments.count }} comment{{ comments.count|pluralize }}
           </p>
         {% endif %}
       </div>
@@ -152,8 +150,7 @@
                             ></textarea>
                 <button type="submit" class="btn-gradient comment-submit-btn">
                   <i class="fas fa-paper-plane"></i>
-                  Post
-                  Comment
+                  Post Comment
                 </button>
               </div>
             </div>

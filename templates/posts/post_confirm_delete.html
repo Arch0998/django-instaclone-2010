@@ -4,54 +4,56 @@
 {% block title %}Delete Post - Instaclone 2010{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}?v=3">
 {% endblock %}
 
 {% block content %}
   <div class="auth-container">
     <div class="auth-card" style="max-width: 500px;">
       <div class="auth-header">
-        <h3 style="color: var(--ig-pink);">
-          <i class="fas fa-exclamation-triangle"></i>
+        <h3 class="gradient-text">
+          <i class="fas fa-trash-alt"></i>
           Delete Post
         </h3>
-        <p class="form-help-text">
+        <p class="form-help-text text-danger">
           This action cannot be undone</p>
       </div>
 
       <div class="auth-body">
-        <div class="delete-preview">
-          <img src="{{ object.image.url }}" alt="Post to delete" class="delete-preview-image">
-          {% if object.caption %}
-            <p class="delete-preview-caption">
-              "{{ object.caption|truncatewords:15 }}"
-            </p>
-          {% endif %}
-          <p class="delete-preview-date">
-            <i class="fas fa-clock"></i>
-            Posted {{ object.created_at|date:"M d, Y" }}
-          </p>
-        </div>
-
-        <div class="alert-custom alert-warning delete-warning">
-          <i class="fas fa-exclamation-triangle"></i>
-          <strong>Warning:</strong>
-          This action will permanently delete your post.
-        </div>
-
-        <form method="post">
-          {% csrf_token %}
-          <div class="delete-buttons">
-            <button type="submit" class="btn-gradient delete-btn-confirm">
-              <i class="fas fa-trash"></i>
-              Yes, Delete Post
-            </button>
-            <a href="{% url 'posts:detail' object.pk %}" class="btn-outline-gradient delete-btn-cancel">
-              <i class="fas fa-times"></i>
-              Cancel
-            </a>
+        <div class="delete-confirmation">
+          <div class="post-preview">
+            <img src="{{ object.image.url }}" alt="Post to delete" class="form-preview-image">
+            {% if object.caption %}
+              <div class="caption-preview">
+                <p><strong>Caption:</strong> {{ object.caption|truncatewords:20 }}</p>
+              </div>
+            {% endif %}
+            <div class="post-meta">
+              <p><small class="text-muted">Created: {{ object.created_at|date:"F d, Y" }}</small></p>
+            </div>
           </div>
-        </form>
+
+          <div class="warning-message">
+            <div class="alert-custom alert-danger">
+              <i class="fas fa-exclamation-triangle"></i>
+              <strong>Warning!</strong> This will permanently delete your post and all associated comments and likes.
+            </div>
+          </div>
+
+          <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-buttons">
+              <button type="submit" class="btn-danger form-button-primary">
+                <i class="fas fa-trash-alt"></i>
+                Delete Post
+              </button>
+              <a href="{% url 'posts:detail' pk=object.pk %}" class="btn-outline-gradient form-button-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
