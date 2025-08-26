@@ -162,15 +162,17 @@
 }
 
 .hashtag-link {
-    color: var(--ig-link);
     text-decoration: none;
-    margin-right: 8px;
-    font-size: 14px;
+    color: var(--ig-link);
+    background-color: rgba(0, 149, 246, 0.1);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
 .hashtag-link:hover {
-    text-decoration: underline;
-    color: var(--ig-link);
+    background-color: rgba(0, 149, 246, 0.2);
 }
 
 .comments-preview {
