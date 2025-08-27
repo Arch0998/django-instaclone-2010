@@ -97,7 +97,8 @@ class AddCommentView(LoginRequiredMixin, generic.View):
 class DeleteCommentView(LoginRequiredMixin, generic.View):
     def post(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
-        if comment.author == request.user or comment.post.author == request.user:
+        if (comment.author == request.user
+                or comment.post.author == request.user):
             comment.delete()
             return JsonResponse({"success": True})
         return JsonResponse({"success": False, "error": "Permission denied"})
@@ -144,10 +145,12 @@ class SearchUsersView(LoginRequiredMixin, generic.View):
                         "first_name": user.first_name,
                         "last_name": user.last_name,
                         "avatar": (
-                            user.profile.avatar.url if user.profile.avatar else None
+                            user.profile.avatar.url
+                            if user.profile.avatar else None
                         ),
                         "profile_url": reverse_lazy(
-                            "accounts:profile", kwargs={"username": user.username}
+                            "accounts:profile",
+                            kwargs={"username": user.username}
                         ),
                     }
                     for user in users

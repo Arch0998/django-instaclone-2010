@@ -27,7 +27,7 @@ class UserRegisterView(CreateView):
     success_url = reverse_lazy("accounts:index")
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        super().form_valid(form)
         UserProfile.objects.get_or_create(user=self.object)
 
         username = form.cleaned_data.get("username")

@@ -4,7 +4,9 @@ from posts.models import Post, Comment, Hashtag, PostLike
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["id", "author", "caption_short", "created_at", "likes_count"]
+    list_display = [
+        "id", "author", "caption_short", "created_at", "likes_count"
+    ]
     search_fields = ["author__username", "caption"]
     list_filter = ["created_at", "author"]
     fields = ["author", "image", "caption", "created_at", "updated_at"]
@@ -14,14 +16,17 @@ class PostAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         if "created_at" in form.base_fields:
             form.base_fields["created_at"].widget.attrs.update(
-                {"class": "vDateTimeField", "placeholder": "YYYY-MM-DD HH:MM:SS"}
+                {
+                    "class": "vDateTimeField",
+                    "placeholder": "YYYY-MM-DD HH:MM:SS"
+                }
             )
         return form
 
     def caption_short(self, obj):
         if obj.caption:
             return (obj.caption[:50] + "..."
-                   if len(obj.caption) > 50 else obj.caption)
+                    if len(obj.caption) > 50 else obj.caption)
         return "No caption"
 
     caption_short.short_description = "Caption"
@@ -40,7 +45,9 @@ class CommentAdmin(admin.ModelAdmin):
     readonly_fields = ["created_at", "updated_at"]
 
     def content_short(self, obj):
-        return obj.content[:50] + "..." if len(obj.content) > 50 else obj.content
+        return (
+            obj.content[:50] + "..." if len(obj.content) > 50 else obj.content
+        )
 
     content_short.short_description = "Content"
 
