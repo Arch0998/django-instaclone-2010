@@ -1,12 +1,14 @@
 import os
 import sys
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 def main():
-    os.environ.setdefault(
-        "DJANGO_SETTINGS_MODULE",
-        "django_instaclone_2010.settings"
-    )
+    settings_module = os.environ.get("DJANGO_SETTINGS_MODULE", "settings.dev")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

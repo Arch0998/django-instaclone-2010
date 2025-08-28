@@ -9,7 +9,7 @@ exclude =
     */migrations/*,
     .venv,
     .env,
-    django_instaclone_2010/settings.py
+    settings
 ignore = E203, E266, W503, N807, N818
 per-file-ignores =
     __init__.py:F401
