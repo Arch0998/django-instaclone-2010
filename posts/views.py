@@ -43,7 +43,7 @@ class PostDetailView(LoginRequiredMixin, generic.DetailView):
 
 class PostUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Post
-    fields = ["caption"]
+    fields = ["image", "caption"]
     template_name = "posts/edit_post.html"
 
     def get_object(self):
