@@ -24,6 +24,7 @@ fedora-messaging-the-new-hotness-schema==1.2.1
 fedora_messaging==3.8.0
 flake8==7.3.0
 gssapi==1.9.0
+gunicorn==23.0.0
 hyperlink==21.0.0
 idna==3.10
 incremental==24.7.2
