@@ -11,8 +11,8 @@
 Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclone-1nla.onrender.com/)
 
 **Demo credentials:**  
-Login: demo_user  
-Pass: 3edc1qaz
+---- Login: demo_user  
+---- Pass: 3edc1qaz
 
 > Desktop version works stably. Mobile app version is under development.
 
