@@ -74,8 +74,8 @@ Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclo
 - **🗄️ Optimized Queries** - Database optimization with select_related and prefetch_related
 - **📱 Media Handling** - Organized media uploads with date-based directory structure
 - **🏷️ Automatic Tagging** - Regex-based hashtag extraction and management
-- **Cloudinary Integration** - All images stored and served via Cloudinary
-- **Environment Switching** - Use `.env` to switch between dev (SQLite) and prod (PostgreSQL) via `DJANGO_SETTINGS_MODULE`
+- **📸 Cloudinary Integration** - All images stored and served via Cloudinary
+- **💾 Environment Switching** - Use `.env` to switch between dev (SQLite) and prod (PostgreSQL) via `DJANGO_SETTINGS_MODULE`
 
 ---
 
@@ -104,25 +104,40 @@ Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclo
 ## 📁 Project Structure
 
 ```
-django-instaclone-2010/
-├── 📁 accounts/              # User management app
-│   ├── models.py            # User, UserProfile, Follow models
-│   ├── views.py             # Profile, authentication, follow views
-│   ├── forms.py             # Registration and profile forms
-│   ├── validators.py        # Custom username validation
-│   └── signals.py           # Auto profile creation
-├── 📁 posts/                # Posts and content app
-│   ├── models.py            # Post, Comment, PostLike, Hashtag models
-│   ├── views.py             # CRUD operations for posts and comments
-│   └── admin.py             # Admin interface customization
-├── 📁 static/               # Static assets
-│   ├── 📁 css/              # Stylesheets for each component
-│   └── 📁 js/               # JavaScript for interactivity
-├── 📁 templates/            # Django templates
-│   ├── base.html            # Base template with navigation
-│   ├── 📁 accounts/         # User-related templates
-│   └── 📁 posts/            # Post-related templates
-└── 📁 media/                # User uploads (avatars, posts)
+📁 django-instaclone-2010/                # Main project root
+├── 📝 manage.py                          # Django management script
+├── 📁 django_instaclone_2010/            # Django core package (settings, URLs, WSGI/ASGI)
+│   ├── asgi.py                           # ASGI config
+│   ├── urls.py                           # Main URL routing
+│   └── wsgi.py                           # WSGI config
+├── 📁 accounts/                          # User management app
+│   ├── models.py                         # User, UserProfile, Follow models
+│   ├── views.py                          # Profile, authentication, follow views
+│   ├── forms.py                          # Registration and profile forms
+│   ├── validators.py                     # Custom username validation
+│   ├── signals.py                        # Auto profile creation
+│   └── 📁 migrations/                    # Database migrations
+├── 📁 posts/                             # Posts and content app
+│   ├── models.py                         # Post, Comment, PostLike, Hashtag models
+│   ├── views.py                          # CRUD operations for posts and comments
+│   └── 📁 migrations/                    # Database migrations
+├── 📁 settings/                          # Django settings (base, dev, prod, testing)
+│   ├── base.py                           # Base settings
+│   ├── dev.py                            # Development settings
+│   ├── prod.py                           # Production settings
+├── 📁 static/                            # Static assets (CSS/JS)
+│   ├── 📁 css/                           # Stylesheets for each component
+│   └── 📁 js/                            # JavaScript for interactivity
+├── 📁 staticfiles/                       # Collected static files (for production)
+├── 📁 templates/                         # Django templates
+│   ├── base.html                         # Base template with navigation
+│   ├── pagination.html                   # Pagination partial
+│   ├── 📁 accounts/                      # User-related templates
+│   └── 📁 posts/                         # Post-related templates
+├── 📁 media/                             # User uploads (avatars, posts)
+├── 📝 README.md                          # Project documentation
+├── 📝 requirements.txt                   # Python dependencies
+└── 🛠️ build.sh                           # Build/deploy script
 ```
 
 ---
