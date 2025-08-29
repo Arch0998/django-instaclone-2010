@@ -8,6 +8,18 @@
 
 ---
 
+Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclone-1nla.onrender.com/)
+
+**Demo credentials:**  
+Login: demo_user  
+Pass: 3edc1qaz
+
+> Desktop version works stably. Mobile app version is under development.
+
+> Note: Some JavaScript features may work slowly or with delays on the free render.com hosting.
+
+---
+
 ## 🌟 Features
 
 ### 📱 Core Social Features
@@ -29,11 +41,12 @@
 
 ### 📸 Post Management
 - **➕ Post Creation** - Upload photos with captions and automatic hashtag detection
-- **✏️ Post Editing** - Edit post captions (authors only)
+- **✏️ Post Editing** - Edit post captions and images (authors only)
 - **🗑️ Post Deletion** - Delete posts with confirmation (authors only)
 - **🔍 Post Details** - Dedicated post pages with full comment threads
 - **📅 Timestamps** - Human-readable timestamps (e.g., "2 hours ago")
 - **🏷️ Hashtag Pages** - Browse all posts by specific hashtags with grid layout
+- **📷 Image Update** - Change post image during editing
 
 ### 💬 Advanced Comment System
 - **💭 Real-time Comments** - Add comments to posts instantly
@@ -61,6 +74,8 @@
 - **🗄️ Optimized Queries** - Database optimization with select_related and prefetch_related
 - **📱 Media Handling** - Organized media uploads with date-based directory structure
 - **🏷️ Automatic Tagging** - Regex-based hashtag extraction and management
+- **Cloudinary Integration** - All images stored and served via Cloudinary
+- **Environment Switching** - Use `.env` to switch between dev (SQLite) and prod (PostgreSQL) via `DJANGO_SETTINGS_MODULE`
 
 ---
 
@@ -172,6 +187,7 @@ This project faithfully recreates the early Instagram experience:
    ```env
    # Django Configuration
    DJANGO_SECRET_KEY=your-secret-key-here
+   DJANGO_SETTINGS_MODULE=settings.dev
    
    # Cloudinary Configuration (for image hosting)
    CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
