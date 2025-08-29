@@ -42,7 +42,8 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ["id", "post", "author", "content_short", "created_at"]
     search_fields = ["author__username", "content"]
     list_filter = ["created_at", "author"]
-    readonly_fields = ["created_at", "updated_at"]
+    readonly_fields = ["updated_at"]
+    fields = ["post", "author", "content", "created_at", "updated_at"]
 
     def content_short(self, obj):
         return (
