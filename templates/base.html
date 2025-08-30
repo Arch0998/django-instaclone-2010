@@ -11,7 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-
+    <link rel="icon" type="image/png" href="{% static 'image/logo.png' %}">
     {% block extra_css %}{% endblock %}
   </head>
   <body class="d-flex flex-column h-100">
@@ -116,11 +116,14 @@
     </main>
 
     <footer class="footer-custom mt-auto">
-      <div class="container">
-        <p class="footer-text">
+      <div class="w-100 position-relative footer-meta-container">
+        <p class="footer-text text-center m-0 w-100">
           <i class="fab fa-instagram"></i>
-           2025 Instaclone 2010  Made with <i class="fas fa-heart footer-heart"></i>
+          2025 Instaclone 2010  Made with <i class="fas fa-heart footer-heart"></i>
         </p>
+        <span class="footer-text small footer-meta-text">
+          This site was developed for educational purposes. All rights belong to <a href="https://meta.com/" target="_blank" rel="noopener" class="footer-text">Meta</a>.
+        </span>
       </div>
     </footer>
 

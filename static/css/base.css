@@ -164,6 +164,23 @@ html {
     font-size: 14px;
 }
 
+.footer-meta-container {
+    position: relative;
+    width: 100%;
+}
+
+.footer-text {
+    color: #6c757d;
+}
+
+.footer-meta-text {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    white-space: nowrap;
+    color: inherit;
+}
+
 @media (max-width: 480px) {
     .pagination {
         gap: 4px;
