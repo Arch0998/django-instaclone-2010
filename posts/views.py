@@ -32,7 +32,7 @@ class PostDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["comments"] = self.object.comments.all().order_by("created_at")
+        context["comments"] = self.object.comments.order_by("created_at")
         context["is_liked"] = False
         if self.request.user.is_authenticated:
             context["is_liked"] = PostLike.objects.filter(
@@ -207,7 +207,7 @@ class HashtagPostsView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.hashtag = get_object_or_404(Hashtag, name=self.kwargs["hashtag"])
-        return self.hashtag.posts.all().order_by("-created_at")
+        return self.hashtag.posts.order_by("-created_at")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

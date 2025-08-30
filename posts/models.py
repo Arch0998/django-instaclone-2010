@@ -57,7 +57,9 @@ class PostLike(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        unique_together = ("user", "post")
+        constraints = [
+            models.UniqueConstraint(fields=["user", "post"], name="unique_user_post_like")
+        ]
 
 
 class Comment(models.Model):
