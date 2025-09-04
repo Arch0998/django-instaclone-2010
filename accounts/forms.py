@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
 from accounts.models import User, UserProfile
+from accounts.validators import validate_first_name, validate_last_name, validate_phone, validate_username
 
 
 class UserRegisterForm(UserCreationForm):
@@ -22,6 +23,18 @@ class UserRegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields["email"].required = True
 
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        return validate_username(username)
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get("first_name")
+        return validate_first_name(first_name)
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get("last_name")
+        return validate_last_name(last_name)
+
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
@@ -32,6 +45,7 @@ class UserRegisterForm(UserCreationForm):
 
     def clean_phone(self):
         phone = self.cleaned_data.get("phone")
+        phone = validate_phone(phone)
         if User.objects.filter(phone=phone).exists():
             raise ValidationError(
                 "A user with this phone number already exists."
@@ -49,6 +63,14 @@ class UserEditForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["email"].required = True
 
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get("first_name")
+        return validate_first_name(first_name)
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get("last_name")
+        return validate_last_name(last_name)
+
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if (
@@ -63,6 +85,7 @@ class UserEditForm(forms.ModelForm):
 
     def clean_phone(self):
         phone = self.cleaned_data.get("phone")
+        phone = validate_phone(phone)
         if (
             User.objects.filter(phone=phone)
             .exclude(id=self.user.id if self.user else None)
@@ -72,6 +95,10 @@ class UserEditForm(forms.ModelForm):
                 "A user with this phone number already exists."
             )
         return phone
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        return validate_username(username)
 
 
 class ProfileEditForm(forms.ModelForm):
