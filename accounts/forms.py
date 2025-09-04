@@ -3,7 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
 from accounts.models import User, UserProfile
-from accounts.validators import validate_first_name, validate_last_name, validate_phone, validate_username
+from accounts.validators import (
+    validate_first_name,
+    validate_last_name,
+    validate_phone,
+    validate_username
+)
 
 
 class UserRegisterForm(UserCreationForm):
