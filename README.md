@@ -11,7 +11,7 @@
 Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclone-1nla.onrender.com/)
 
 **Demo credentials:**  
----- Login: demo_user  
+---- Login: demo_user
 ---- Pass: 3edc1qaz
 
 > Desktop version works stably. Mobile app version is under development.
@@ -116,10 +116,12 @@ Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclo
 │   ├── forms.py                          # Registration and profile forms
 │   ├── validators.py                     # Custom username validation
 │   ├── signals.py                        # Auto profile creation
+│   ├── 📁 tests/                         # Tests for accounts app
 │   └── 📁 migrations/                    # Database migrations
 ├── 📁 posts/                             # Posts and content app
 │   ├── models.py                         # Post, Comment, PostLike, Hashtag models
 │   ├── views.py                          # CRUD operations for posts and comments
+│   ├── 📁 tests/                         # Tests for posts app
 │   └── 📁 migrations/                    # Database migrations
 ├── 📁 settings/                          # Django settings (base, dev, prod, testing)
 │   ├── base.py                           # Base settings
@@ -196,20 +198,20 @@ This project faithfully recreates the early Instagram experience:
    ```
 
 4. **Configure environment variables**
-   
+
    Create a `.env` file in the project root directory and add the following variables:
-   
+
    ```env
    # Django Configuration
    DJANGO_SECRET_KEY=your-secret-key-here
    DJANGO_SETTINGS_MODULE=settings.dev
-   
+
    # Cloudinary Configuration (for image hosting)
    CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
    CLOUDINARY_API_KEY=your-cloudinary-api-key
    CLOUDINARY_API_SECRET=your-cloudinary-api-secret
    ```
-   
+
    **🔑 How to get these values:**
 
 
@@ -313,3 +315,5 @@ This project is for educational purposes, recreating the early Instagram experie
 ---
 
 *Built with ❤️ and nostalgia for the golden age of social media*
+
+
