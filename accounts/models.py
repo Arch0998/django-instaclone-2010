@@ -62,3 +62,8 @@ class Follow(models.Model):
 
     class Meta:
         unique_together = ("follower", "following")
+
+    def __str__(self):
+        return (
+            f"Follow: {self.follower.username} -> {self.following.username}"
+        )

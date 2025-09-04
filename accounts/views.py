@@ -156,7 +156,8 @@ class FollowersListView(LoginRequiredMixin, ListView):
             username=self.kwargs["username"]
         )
         return (Follow.objects.filter(following=self.profile_user)
-                .select_related("follower", "follower__profile"))
+                .select_related("follower", "follower__profile")
+                .order_by("-created_at"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -185,7 +186,8 @@ class FollowingListView(LoginRequiredMixin, ListView):
             username=self.kwargs["username"]
         )
         return (Follow.objects.filter(follower=self.profile_user)
-                .select_related("following", "following__profile"))
+                .select_related("following", "following__profile")
+                .order_by("-created_at"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -215,7 +217,7 @@ class SearchView(LoginRequiredMixin, ListView):
                 Q(username__icontains=query)
                 | Q(first_name__icontains=query)
                 | Q(last_name__icontains=query)
-            )
+            ).order_by("username")
 
             if self.request.user.is_authenticated:
                 queryset = queryset.exclude(id=self.request.user.id)
