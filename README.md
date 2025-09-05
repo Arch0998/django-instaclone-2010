@@ -10,9 +10,9 @@
 
 Live demo available for testing: [instaclone-1nla.onrender.com](https://instaclone-1nla.onrender.com/)
 
-**Demo credentials:**  
----- Login: demo_user
----- Pass: 3edc1qaz
+**Demo credentials:**\
+--> Login: demo_user\
+--> Pass: 3edc1qaz
 
 > Desktop version works stably. Mobile app version is under development.
 
@@ -315,5 +315,3 @@ This project is for educational purposes, recreating the early Instagram experie
 ---
 
 *Built with ❤️ and nostalgia for the golden age of social media*
-
-
