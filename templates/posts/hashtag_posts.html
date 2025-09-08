@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}#{{ hashtag.name }} - Instaclone 2010{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/hashtag_posts.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/hashtag_posts.js' %}?v=1"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="profile-container">
+
+    <div class="card-modern hashtag-header">
+      <div class="posts-header">
+        <div class="hashtag-info">
+          <div>
+            <h3 class="hashtag-title">
+              <i class="fas fa-hashtag hashtag-icon"></i>
+              <span class="hashtag-name">{{ hashtag.name }}</span>
+            </h3>
+            <p class="hashtag-count">
+              <i class="fas fa-images"></i>
+              {{ posts.count }} post{{ posts.count|pluralize }} found
+            </p>
+          </div>
+          <a href="{% url 'accounts:profile' username=user.username %}"
+             class="btn-outline-gradient back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Profile
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="posts-card">
+      <div class="posts-header">
+        <h5>
+          <i class="fas fa-images"></i>
+          Posts with #{{ hashtag.name }}
+          <span class="posts-count">({{ page_obj.paginator.count }})</span>
+        </h5>
+      </div>
+      <div class="posts-body">
+        {% if posts %}
+          <div class="row">
+            {% for post in posts %}
+              <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                <div class="card-modern post-card"
+                     onclick="window.location.href='{% url 'posts:detail' post.pk %}'">
+
+                  <div class="post-image-container">
+                    <img src="{{ post.image.url }}"
+                         alt="Post by {{ post.author.username }}"
+                         class="post-image">
+
+                    <div class="post-overlay">
+                      <div class="overlay-content">
+                        <div class="overlay-stats">
+                          <i class="fas fa-heart"></i> {{ post.likes.count }}
+                          <span class="comment-count">
+                            <i class="fas fa-comment"></i> {{ post.comments.count }}
+                          </span>
+                        </div>
+                        <p class="overlay-text">
+                          Click to view details</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="post-info">
+                    <div class="author-info">
+                      {% if post.author.profile.avatar %}
+                        <img src="{{ post.author.profile.avatar.url }}"
+                             alt="{{ post.author.username }}"
+                             class="author-avatar">
+                      {% else %}
+                        <div class="author-avatar-placeholder">
+                          <i class="fas fa-user fa-sm"></i>
+                        </div>
+                      {% endif %}
+                      <div>
+                        <a href="{% url 'accounts:profile' username=post.author.username %}"
+                           class="author-link">
+                          {{ post.author.username }}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div class="post-meta">
+                      <p class="post-date">
+                        <i class="fas fa-clock"></i>
+                        {{ post.created_at|date:"M d, Y \a\t H:i" }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          {% if page_obj.has_other_pages %}
+            <div class="pagination-container">
+              <nav aria-label="Posts pagination">
+                <ul class="pagination-nav">
+                  {% if page_obj.has_previous %}
+                    <li>
+                      <a href="?page=1" class="pagination-link">
+                        <i class="fas fa-angle-double-left"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">
+                        <i class="fas fa-angle-left"></i>
+                      </a>
+                    </li>
+                  {% endif %}
+
+                  {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                      <li>
+                        <span class="pagination-current">{{ num }}</span>
+                      </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                      <li>
+                        <a href="?page={{ num }}" class="pagination-link">{{ num }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if page_obj.has_next %}
+                    <li>
+                      <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">
+                        <i class="fas fa-angle-right"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link">
+                        <i class="fas fa-angle-double-right"></i>
+                      </a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+            </div>
+
+            <div class="pagination-info">
+              Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} posts
+            </div>
+          {% endif %}
+
+        {% else %}
+          <div class="no-posts">
+            <div class="no-posts-icon">
+              <i class="fas fa-hashtag"></i>
+            </div>
+            <h4 class="no-posts-title">
+              No posts found with #{{ hashtag.name }}
+            </h4>
+            <p class="no-posts-text">
+              This hashtag doesn't have any posts yet. Be the first to use it!
+            </p>
+            <a href="{% url 'posts:create' %}" class="btn-gradient">
+              <i class="fas fa-plus-circle"></i>
+              Create Post with #{{ hashtag.name }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

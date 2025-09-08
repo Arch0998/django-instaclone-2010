@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Feed - Instaclone 2010{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/like_button.js' %}?v=1"></script>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="feed-container">
+  <div class="feed-header">
+    <h2>
+      <i class="fas fa-home"></i>
+      Your Feed
+    </h2>
+  </div>
+
+  {% if posts %}
+    <div class="posts-list">
+      {% for post in posts %}
+        <article class="post-card">
+          <div class="post-header">
+            <div class="author-info">
+              {% if post.author.profile.avatar %}
+                <img src="{{ post.author.profile.avatar.url }}"
+                     alt="{{ post.author.username }}"
+                     class="author-avatar">
+              {% else %}
+                <div class="author-avatar-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              {% endif %}
+
+              <div class="author-details">
+                <a href="{% url 'accounts:profile' username=post.author.username %}"
+                   class="author-username">{{ post.author.username }}</a>
+                <p class="post-date">{{ post.created_at|timesince }} ago</p>
+              </div>
+            </div>
+
+            {% if post.author == user %}
+              <div class="post-actions">
+                <a href="{% url 'posts:detail' post.pk %}" class="btn-link">
+                  <i class="fas fa-ellipsis-h"></i>
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="post-image-container">
+            <a href="{% url 'posts:detail' post.pk %}" class="feed-post-link">
+              <img src="{{ post.image.url }}"
+                   alt="Post by {{ post.author.username }}"
+                   class="post-image">
+            </a>
+
+            <div class="post-overlay">
+              <div class="overlay-content">
+                <div class="overlay-stats">
+                  <i class="fas fa-heart"></i> {{ post.likes.count }}
+                  <span class="comment-count">
+                    <i class="fas fa-comment"></i> {{ post.comments.count }}
+                  </span>
+                </div>
+                <p class="overlay-text">
+                  Click to view details
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="post-actions-bar">
+            <div class="action-buttons">
+              <button class="like-btn {% if post.id in user_likes %}liked{% endif %}"
+                      data-post-id="{{ post.id }}">
+                <i class="{% if post.id in user_likes %}fas{% else %}far{% endif %} fa-heart"></i>
+                {% if post.likes.count > 0 %}
+                  <span class="count-badge">{{ post.likes.count }}</span>
+                {% endif %}
+              </button>
+
+              <a href="{% url 'posts:detail' post.pk %}" class="comment-btn">
+                <i class="far fa-comment"></i>
+                {% if post.comments.count > 0 %}
+                  <span class="count-badge">{{ post.comments.count }}</span>
+                {% endif %}
+              </a>
+            </div>
+          </div>
+
+          {% if post.caption %}
+            <div class="post-caption">
+              <a href="{% url 'accounts:profile' username=post.author.username %}"
+                 class="author-username">{{ post.author.username }}</a>
+              <span class="caption-text">{{ post.caption }}</span>
+            </div>
+          {% endif %}
+
+          {% if post.hashtags.exists %}
+            <div class="post-hashtags">
+              {% for hashtag in post.hashtags.all %}
+                <a href="{% url 'posts:hashtag_posts' hashtag=hashtag.name %}"
+                   class="hashtag-link">#{{ hashtag.name }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+      <div class="pagination-container">
+        {% include "pagination.html" %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="empty-feed">
+      <div class="empty-content">
+        <i class="fas fa-users fa-3x"></i>
+        <h3>Your feed is empty</h3>
+        <p>Follow some users to see their posts in your feed!</p>
+        <a href="{% url 'accounts:search' %}" class="btn-primary">
+          <i class="fas fa-search"></i>
+          Find people to follow
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

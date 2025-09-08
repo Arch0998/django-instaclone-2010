@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Search - {{ query }}{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <h3 class="mb-4">
+          Search results: {{ query }}</h3>
+
+        <form class="mb-4" method="get" action="{% url 'accounts:search' %}">
+          <div class="input-group">
+            <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Search users...">
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit">
+                Search
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {% if users %}
+          <div class="user-list">
+            {% for user in users %}
+              <div class="card mb-3">
+                <div class="card-body d-flex align-items-center">
+                  <div class="user-avatar me-4">
+                    {% if user.profile.avatar %}
+                      <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="rounded-circle" width="50" height="50">
+                    {% else %}
+                      <div class="default-avatar rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: #e9ecef;">
+                        <i class="fas fa-user text-muted"></i>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="user-info flex-grow-1">
+                    <a href="{% url 'accounts:profile' username=user.username %}" class="user-link text-decoration-none">
+                      <h5 class="card-title mb-1">{{ user.username }}</h5>
+                    </a>
+                    {% if user.first_name or user.last_name %}
+                      <p class="card-text text-muted mb-0">{{ user.first_name }} {{ user.last_name }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          {% include "pagination.html" with page=page_obj %}
+        {% else %}
+          <div class="alert alert-info">
+            No users found.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

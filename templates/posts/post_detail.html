@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Post by {{ post.author.username }} - Instaclone 2010{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/post_detail.css' %}?v=5">
+{% endblock %}
+
+{% block extra_js %}
+  {% load static %}
+  <script src="{% static 'js/post_detail.js' %}?v=1"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="profile-container">
+    <div class="card-modern">
+      <div class="post-header">
+        {% if post.author.profile.avatar %}
+          <img src="{{ post.author.profile.avatar.url }}"
+               alt="{{ post.author.username }}"
+               class="post-author-avatar">
+        {% else %}
+          <div class="post-author-placeholder">
+            <i class="fas fa-user"></i>
+          </div>
+        {% endif %}
+        <div class="post-author-info">
+          <h6 class="post-author-name">
+            <a href="{% url 'accounts:profile' username=post.author.username %}"
+               class="post-author-link">
+              {{ post.author.username }}
+            </a>
+          </h6>
+          <small class="post-date-small">
+            <i class="fas fa-clock"></i>
+            {{ post.created_at|date:"M d, Y \a\t H:i" }}
+          </small>
+        </div>
+        {% if user == post.author %}
+          <div class="dropdown">
+            <button class="post-options-btn" data-bs-toggle="dropdown">
+              <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="{% url 'posts:edit' post.pk %}"><i class="fas fa-edit"></i>
+                  Edit</a>
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="{% url 'posts:delete' post.pk %}"><i class="fas fa-trash"></i>
+                  Delete</a>
+              </li>
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="post-image-container">
+        <img src="{{ post.image.url }}"
+             alt="Post by {{ post.author.username }}"
+             class="post-main-image">
+      </div>
+
+      <div class="post-actions">
+        {% if user.is_authenticated %}
+          <button id="like-btn" onclick="toggleLike({{ post.pk }})"
+                  class="action-btn like-btn {% if is_liked %}liked{% endif %}">
+            <i class="{% if is_liked %}fas{% else %}far{% endif %} fa-heart"></i>
+            {% if post.likes.count > 0 %}
+              <span class="count-badge">{{ post.likes.count }}</span>
+            {% endif %}
+          </button>
+        {% else %}
+          <button class="action-btn">
+            <i class="far fa-heart"></i>
+            {% if post.likes.count > 0 %}
+              <span class="count-badge">{{ post.likes.count }}</span>
+            {% endif %}
+          </button>
+        {% endif %}
+        <button class="action-btn" onclick="document.querySelector('textarea[name=content]').focus()">
+          <i class="far fa-comment"></i>
+          {% if comments.count > 0 %}
+            <span class="count-badge">{{ comments.count }}</span>
+          {% endif %}
+        </button>
+        <div class="actions-right">
+        </div>
+      </div>
+
+      <div class="post-info-section">
+        {% if post.caption %}
+          <p class="post-caption-container" id="post-caption">
+            {{ post.caption|linebreaks }}
+          </p>
+        {% endif %}
+
+        {% if post.hashtags.all %}
+          <div class="hashtags-container">
+            {% for hashtag in post.hashtags.all %}
+              <a href="{% url 'posts:hashtag_posts' hashtag=hashtag.name %}"
+                 class="hashtag-link">
+                {{ hashtag }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <div class="posts-header">
+        <h5>
+          <i class="fas fa-comments"></i>
+          Comments
+          <span id="comments-count" class="posts-count">({{ comments.count }})</span>
+        </h5>
+      </div>
+
+      {% if user.is_authenticated %}
+        <div class="comments-section">
+          <form id="comment-form" method="post" action="{% url 'posts:add_comment' post.pk %}">
+            {% csrf_token %}
+            <div class="comment-form-container">
+              {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}"
+                     alt="{{ user.username }}"
+                     class="comment-author-avatar">
+              {% else %}
+                <div class="comment-author-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              {% endif %}
+              <div class="comment-form-content">
+                            <textarea
+                                name="content"
+                                placeholder="Add a comment..."
+                                class="comment-textarea"
+                                required
+                            ></textarea>
+                <button type="submit" class="btn-gradient comment-submit-btn">
+                  <i class="fas fa-paper-plane"></i>
+                  Post Comment
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      {% endif %}
+
+      <div id="comments-list" class="comments-list">
+        {% if comments.count > 0 %}
+          {% for comment in comments %}
+            <div id="comment-{{ comment.pk }}" class="comment-item">
+              {% if comment.author.profile.avatar %}
+                <img src="{{ comment.author.profile.avatar.url }}"
+                     alt="{{ comment.author.username }}"
+                     class="comment-author-avatar">
+              {% else %}
+                <div class="comment-author-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              {% endif %}
+              <div class="comment-content">
+                <div class="comment-header">
+                  <div>
+                    <strong class="comment-author">
+                      <a href="{% url 'accounts:profile' username=comment.author.username %}"
+                         class="comment-author-link">
+                        {{ comment.author.username }}
+                      </a>
+                    </strong>
+                    <small class="comment-date">
+                      <i class="fas fa-clock"></i>
+                      {{ comment.created_at|date:"M d, Y \a\t H:i" }}
+                    </small>
+                  </div>
+                  {% if user == comment.author or user == post.author %}
+                    <button onclick="deleteComment({{ comment.pk }})"
+                            class="comment-delete-btn">
+                      <i class="fas fa-trash fa-sm"></i>
+                    </button>
+                  {% endif %}
+                </div>
+                <p class="comment-text">
+                  {{ comment.content|linebreaks }}
+                </p>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div id="no-comments" class="no-comments">
+            <div class="no-comments-icon">
+              <i class="far fa-comment"></i>
+            </div>
+            <p class="no-comments-text">
+              No comments yet. Be the first to comment!
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

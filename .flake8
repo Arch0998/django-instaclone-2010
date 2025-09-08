@@ -1,0 +1,16 @@
+[flake8]
+select = B,C,E,F,W,T4,B9,Q0,N8,VNE
+max-line-length = 79
+max-complexity = 18
+inline-quotes = "
+exclude =
+    .git,
+    __pycache__,
+    */migrations/*,
+    .venv,
+    .env,
+    settings
+ignore = E203, E266, W503, N807, N818
+per-file-ignores =
+    __init__.py:F401
+    accounts/apps.py:F401
